@@ -29,8 +29,10 @@ add_executable(todhchai
     todhchai/todhchai.cpp
     todhchai/helpers/camera.cpp
     todhchai/objects/skybox.cpp
+    todhchai/objects/cloud.cpp
     todhchai/objects/building.cpp
     todhchai/helpers/texture.cpp
+    todhchai/helpers/objectLoader.cpp
     todhchai/render/shader.cpp
 )
 

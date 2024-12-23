@@ -4,20 +4,24 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
+// texture.cpp
+
 GLuint LoadTextureTileBox(const char *texture_file_path, bool doRepeat)
 {
-    // Flip image if you want textures to match typical UV coordinate systems.
-    // If your model's UVs are already correct, you can keep this as false.
-    stbi_set_flip_vertically_on_load(false);
+    // Flip image vertically if needed (adjust based on your UV mapping)
+    stbi_set_flip_vertically_on_load(true);
 
     int w, h, channels;
-    // Ask STB to return the *original* channels (3 or 4) so we can pick the correct format below.
-    // If you always want RGBA, replace the last parameter (0) with 4.
-    unsigned char* img = stbi_load(texture_file_path, &w, &h, &channels, 0);
+    // Force loading the image with 3 channels (RGB)
+    unsigned char* img = stbi_load(texture_file_path, &w, &h, &channels, 3);
     if (!img) {
-        std::cerr << "Failed to load texture: " << texture_file_path << std::endl;
+        std::cerr << "Failed to load texture: " << texture_file_path 
+                  << ". Reason: " << stbi_failure_reason() << std::endl;
         return 0;
     }
+
+    std::cout << "Loaded texture: " << texture_file_path 
+              << " (" << w << "x" << h << "), Channels: " << channels << std::endl;
 
     // Create and bind a texture object
     GLuint texture;
@@ -39,24 +43,14 @@ GLuint LoadTextureTileBox(const char *texture_file_path, bool doRepeat)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // Determine the correct format
-    GLenum format;
-    if (channels == 3) {
-        format = GL_RGB;
-    } else if (channels == 4) {
-        format = GL_RGBA;
-    } else {
-        // Fallback, though very rare if not 3 or 4
-        format = GL_RGB;
-        std::cerr << "Warning: texture has unexpected channel count = " << channels << ". Defaulting to GL_RGB.\n";
-    }
+    // Since we forced 3 channels, set format accordingly
+    GLenum format = GL_RGB;
 
     // Upload the texture to the GPU
     glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
 
-    // If you want mipmaps:
+    // Generate mipmaps for better scaling
     glGenerateMipmap(GL_TEXTURE_2D);
-    // And set the filtering to use the mipmaps
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     // Cleanup

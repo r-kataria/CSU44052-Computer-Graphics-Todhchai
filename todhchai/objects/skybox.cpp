@@ -141,8 +141,8 @@ void Skybox::initialize(const glm::vec3& pos, const glm::vec3& scl)
 
     // Load all skybox textures
     TextureIds[0] = LoadTextureTileBox("../assets/sky.png", false);
-    TextureIds[1] = LoadTextureTileBox("../assets/sky_debug.png", false);
-    TextureIds[2] = LoadTextureTileBox("../assets/studio_garden.png", false);
+    TextureIds[1] = LoadTextureTileBox("../assets/test.png", false);
+    TextureIds[2] = LoadTextureTileBox("../assets/test2.png", false);
     TextureIds[3] = LoadTextureTileBox("../assets/studio_garden_debug.png", false);
 
     // Make sure we set the sampler to texture unit 0
