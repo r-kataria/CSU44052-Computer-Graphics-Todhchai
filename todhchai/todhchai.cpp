@@ -104,7 +104,10 @@ int main()
 
     // 3. Create Cloud
     // Place it appropriately in the scene
-    myCloud.initialize(glm::vec3(25.0f, -100.0f, 25.0f), glm::vec3(1.0f));
+    // minecraft
+     myCloud.initialize(glm::vec3(30.0f, -75.0f, 50.0f), glm::vec3(1.0f));
+
+    // myCloud.initialize(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
 
     // Setup projection matrix
     float FoV   = 45.0f;
@@ -138,7 +141,7 @@ int main()
         glm::mat4 buildingVP = projection * view;
         for(auto &b : buildings) {
             // Uncomment if you have buildings to render
-            // b.render(buildingVP);
+            b.render(buildingVP);
         }
 
         // Disable face culling temporarily for clouds if needed

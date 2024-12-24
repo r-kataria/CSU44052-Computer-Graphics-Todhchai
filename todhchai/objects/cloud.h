@@ -44,7 +44,7 @@ struct Cloud
     std::vector<GLuint> textures;
 
     void initialize(const glm::vec3& pos, const glm::vec3& scl);
-    void render(const glm::mat4& vp);
+    void render(const glm::mat4 &vp);
     void cleanup();
 };
 
