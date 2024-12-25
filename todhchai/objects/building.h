@@ -1,31 +1,35 @@
+// building.h
 #ifndef BUILDING_H
 #define BUILDING_H
 
-#pragma once
 #include <glm/glm.hpp>
+#include <glad/gl.h>
 
-struct Building
-{
+class Building {
+public:
+    void initialize(glm::vec3 pos, glm::vec3 scl);
+    void initialize(glm::vec3 pos, glm::vec3 scl, const char* texturePath);
+
+    void render(const glm::mat4& vp, glm::vec3 lightPos);
+    void cleanup();
+
+private:
     glm::vec3 position;
     glm::vec3 scale;
 
-    // OpenGL buffers
-    unsigned int vertexArrayID;
-    unsigned int vertexBufferID;
-    unsigned int indexBufferID;
-    unsigned int colorBufferID;
-    unsigned int uvBufferID;
-    unsigned int textureID;
+    GLuint vertexArrayID;
+    GLuint vertexBufferID;
+    GLuint uvBufferID;
+    GLuint indexBufferID;
+    GLuint textureID;
 
-    // Shader variable IDs
-    unsigned int mvpMatrixID;
-    unsigned int textureSamplerID;
-    unsigned int programID;
-
-    void initialize(glm::vec3 pos, glm::vec3 scl);
-    void render(const glm::mat4& vp);
-    void cleanup();
+    GLuint programID;
+    GLuint mvpMatrixID;
+    GLuint modelMatrixID;      // New
+    GLuint textureSamplerID;   // New
+    GLuint lightPosID;         // New
+    GLuint lightColorID;       // New
+    GLuint objectColorID;      // New
 };
 
-
-#endif
+#endif // BUILDING_H

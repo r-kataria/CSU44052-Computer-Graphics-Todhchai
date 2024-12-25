@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Define the globals declared in camera.h
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0, 0.0f);
+glm::vec3 cameraPos   = glm::vec3(50.0f, 30.0, 50.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -14,7 +14,7 @@ float pitch = 0.0f;
 float lastX = 1024.0f / 2.0f;
 float lastY = 768.0f  / 2.0f;
 bool  firstMouse = true;
-float cameraSpeed = 0.2f;
+float cameraSpeed = 5.0f;
 
 // Mouse callback
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -58,19 +58,21 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 
         glm::vec3 rightVec = glm::normalize(glm::cross(cameraFront, cameraUp));
+        glm::vec3 movement = glm::vec3(0.0f);
+
         switch (key)
         {
             case GLFW_KEY_UP:
-                cameraPos += cameraFront * cameraSpeed;
+                movement += cameraFront * cameraSpeed;
                 break;
             case GLFW_KEY_DOWN:
-                cameraPos -= cameraFront * cameraSpeed;
+                movement -= cameraFront * cameraSpeed;
                 break;
             case GLFW_KEY_LEFT:
-                cameraPos -= rightVec * cameraSpeed;
+                movement -= rightVec * cameraSpeed;
                 break;
             case GLFW_KEY_RIGHT:
-                cameraPos += rightVec * cameraSpeed;
+                movement += rightVec * cameraSpeed;
                 break;
 
             case GLFW_KEY_ESCAPE:
@@ -79,6 +81,14 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
             default:
                 break;
+        }
+
+        // Update camera position
+        cameraPos += movement;
+
+        // Boundary Check: Ensure x does not go below 0
+        if (cameraPos.y < 0.0f) {
+            cameraPos.y = 0.0f;
         }
     }
 }

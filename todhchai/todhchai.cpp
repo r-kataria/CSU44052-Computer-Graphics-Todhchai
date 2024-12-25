@@ -7,8 +7,10 @@
 
 #include "helpers/camera.h"
 #include "objects/skybox.h"
+#include "objects/sun.h"
 #include "objects/building.h"
 #include "objects/cloud.h"   // Include the Cloud class
+#include "objects/ground.h" // Include the Ground class
 
 #include <vector>
 #include <cstdlib>
@@ -20,8 +22,6 @@
 GLFWwindow* window = nullptr; 
 int UsedTextureIndex = 0;
 
-// Example: create a global or static cloud
-Cloud myCloud;
 
 // Camera variables (assuming these are defined in "helpers/camera.h")
 extern glm::vec3 cameraPos;
@@ -76,6 +76,18 @@ int main()
     Skybox skybox;
     skybox.initialize(glm::vec3(0.0f), glm::vec3(50.0f));
 
+
+    glm::vec3 lightPos(50.0f, 50.0f, 50.0f);
+
+
+    Sun sunOne;
+    sunOne.initialize(lightPos, glm::vec3(2.0f));
+
+
+    // Define array of facade textures
+    const char* facadeTextures[] = {
+        "../assets/tex/minecraft/block/grass_block_top.png"
+    };
     // 2. Create Buildings
     std::vector<Building> buildings;
     {
@@ -96,18 +108,43 @@ int main()
                 glm::vec3 bscale(size, height, size);
 
                 Building b;
-                b.initialize(position, bscale);
+                b.initialize(position, bscale, facadeTextures[0]);
                 buildings.push_back(b);
             }
         }
     }
 
-    // 3. Create Cloud
-    // Place it appropriately in the scene
-    // minecraft
-     myCloud.initialize(glm::vec3(30.0f, -75.0f, 50.0f), glm::vec3(1.0f));
+        // 3. Create Grounds
+        std::vector<Building> grounds;
+        const char* groundTextures[] = {
+            "../assets/tex/minecraft/block/dirt.png",
+            "../assets/tex/minecraft/block/grass_block_top.png",
+            "../assets/tex/minecraft/block/stone.png",
+            "../assets/tex/minecraft/block/gravel.png"
+        };
 
-    // myCloud.initialize(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
+        const int groundCountX = 2;
+        const int groundCountZ = 2;
+        const int groundSizeX = 50;
+        const int groundSizeZ = 50;
+        for(int i = 0; i < groundCountX; ++i) {
+            for(int j = 0; j < groundCountZ; ++j) {
+                Building g;
+                // Arrange them in a 2x2 grid
+                float x = i * groundSizeX * 2;
+                float z = j * groundSizeZ * 2;
+                glm::vec3 position(x, -1.0f, z);
+                glm::vec3 scale(groundSizeX, 0.1f, groundSizeZ); // No scaling needed
+                g.initialize(position, scale, groundTextures[i * groundCountZ + j]); // Repeat texture 10 times
+                grounds.push_back(g);
+            }
+        }
+
+    Cloud myCloud;
+    // minecraft
+     myCloud.initialize(glm::vec3(100.0f, -50.0f, 30.0f), glm::vec3(1.0f));
+
+    //myCloud.initialize(glm::vec3(75.0f, 75.0f, 75.0f), glm::vec3(50.0f));
 
     // Setup projection matrix
     float FoV   = 45.0f;
@@ -141,14 +178,22 @@ int main()
         glm::mat4 buildingVP = projection * view;
         for(auto &b : buildings) {
             // Uncomment if you have buildings to render
-            b.render(buildingVP);
+            b.render(buildingVP, lightPos);
         }
+        // Render Grounds
+        for(auto &g : grounds) {
+            g.render(buildingVP, lightPos); // Use the same View-Projection matrix as buildings
+        }
+
+
+        sunOne.render(buildingVP);
+
 
         // Disable face culling temporarily for clouds if needed
         glDisable(GL_CULL_FACE);
 
         // Render Clouds
-        myCloud.render(buildingVP);
+        myCloud.render(buildingVP, lightPos);
 
         // Re-enable face culling
         glEnable(GL_CULL_FACE);
@@ -167,6 +212,11 @@ int main()
     for (auto &b : buildings) {
         b.cleanup();
     }
+
+            for(auto &g : grounds) {
+            g.cleanup(); // Use the same View-Projection matrix as buildings
+        }
+
     myCloud.cleanup();
 
     glfwTerminate();

@@ -11,7 +11,8 @@
 // Structure to hold material information
 struct Material {
     std::string name;
-    std::string diffuse_texname;
+    std::string diffuse_texname; // Name of the diffuse texture file
+    float Kd[3]; // Diffuse color components (commonly used as Kd in OBJ)
     // Add other material properties if needed
 };
 

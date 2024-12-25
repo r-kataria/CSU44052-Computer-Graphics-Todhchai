@@ -9,35 +9,33 @@ out vec4 FragColor;
 
 // Uniforms
 uniform sampler2D textureSampler;
+uniform vec3 lightPos;            // Light position (e.g., (0.0, 4.0, 0.0))
+uniform vec3 lightColor;          // Light color (e.g., vec3(1.0, 1.0, 1.0))
+uniform vec3 objectColor;         // Object base color (can be vec3(1.0) if using textures exclusively)
 
-// For a simple directional light:
-uniform vec3 lightDirection = vec3(0.0, 1.0, 1.0);  // example direction
-uniform float ambientFactor  = 0.2;  // ambient light contribution
-uniform int   numShades      = 3;    // how many “steps” for the toon shading
 
 void main()
 {
-    // Sample the texture color
-    vec4 texColor = texture(textureSampler, fragUV);
+  // Ambient lighting
+    float ambientStrength = 0.3;
+    vec3 ambient = ambientStrength * lightColor;
+
+    // Diffuse lighting
+    vec3 norm = normalize(fragNormal);
+
+    vec3 lightDir = normalize(lightPos - fragWorldPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
     
-    // Normalize inputs
-    vec3 norm      = normalize(fragNormal);
-    vec3 lightDir  = normalize(-lightDirection); 
-    // (if lightDirection is the direction from the light toward the scene, 
-    // you might want to invert it with `-lightDirection` if you intend 
-    // to measure the angle from the fragment to the light)
+    
+    
+    // Combine ambient and diffuse components
+    vec3 lighting = ambient + diffuse;
 
-    // Basic diffuse term = max(dot(N, L), 0)
-    float diffuse = max(dot(norm, lightDir), 0.0);
 
-    // Apply discrete “stepping” to the diffuse factor
-    // e.g. if numShades=3, we jump in increments of 1/3 
-    float stepSize = 1.0 / float(numShades);
-    float toonDiffuse = floor(diffuse / stepSize) * stepSize;
+    
+    vec4 textureColor = texture(textureSampler, fragUV);
+    vec3 result = lighting * textureColor.rgb;
+    FragColor = vec4(result, textureColor.a);
 
-    // Add a small ambient factor, so it’s never totally black
-    float finalIntensity = ambientFactor + (1.0 - ambientFactor) * toonDiffuse;
-
-    // Combine with texture color
-    FragColor = vec4(finalIntensity * texColor.rgb, texColor.a);
 }

@@ -1,28 +1,44 @@
 #ifndef SUN_H
 #define SUN_H
 
-#include <glm/glm.hpp>
+#pragma once
+#include <glad/gl.h>
+#include <glm/gtc/matrix_transform.hpp>
 
-class Sun {
-public:
-    void initialize();
-    void render(const glm::mat4& view, const glm::mat4& projection, 
-                const glm::vec3& cameraPos);
+
+struct Sun
+{
+    // Public members
+    glm::vec3 position;
+    glm::vec3 scale;
+
+    // Constructor and Destructor
+    Sun() : position(0.0f), scale(1.0f) {}
+    ~Sun() {}
+
+    // Public methods
+    void initialize(glm::vec3 pos, glm::vec3 scl);
+    void render(const glm::mat4& vp);
     void cleanup();
 
 private:
-    unsigned int programID;
-    unsigned int vertexArrayID;
-    unsigned int vertexBufferID;
-    unsigned int uvBufferID;
-    unsigned int indexBufferID;
-    unsigned int textureID;
+    // OpenGL buffers
+    GLuint vertexArrayID;
+    GLuint vertexBufferID;
+    GLuint indexBufferID;
+    GLuint uvBufferID;
+    GLuint textureID;
 
-    unsigned int mvpMatrixID;
-    unsigned int sunPositionWS_ID;  // Uniform for sun world-space position
-    unsigned int textureSamplerID;
+    // Shader variable IDs
+    GLuint mvpMatrixID;
+    GLuint textureSamplerID;
+    GLuint programID;
 
-    glm::vec3 sunPositionWS; // The sun’s world-space position
+    // Static data arrays
+    static const GLfloat vertex_buffer_data[72];
+    static const GLfloat color_buffer_data[72];
+    static const GLuint index_buffer_data[36];
+    static const GLfloat uv_buffer_data[48];
 };
 
-#endif
+#endif // SUN_H
