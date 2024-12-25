@@ -227,6 +227,7 @@ void Building::initialize(glm::vec3 pos, glm::vec3 scl, const char* texturePath)
     modelMatrixID    = glGetUniformLocation(programID, "Model");
     textureSamplerID = glGetUniformLocation(programID, "textureSampler");
     lightPosID       = glGetUniformLocation(programID, "lightPos");
+    viewPosID       = glGetUniformLocation(programID, "viewPos");
     lightColorID     = glGetUniformLocation(programID, "lightColor");
     objectColorID    = glGetUniformLocation(programID, "objectColor");
 
@@ -239,7 +240,10 @@ void Building::initialize(glm::vec3 pos, glm::vec3 scl, const char* texturePath)
     glBindVertexArray(0);
 }
 
-void Building::render(const glm::mat4& vp, glm::vec3 lightPos) {
+
+
+
+void Building::render(const glm::mat4& vp, glm::vec3 lightPos, glm::vec3 viewPos) {
     if (programID == 0 || textureID == 0) {
         std::cerr << "Error: Shader program or texture not initialized." << std::endl;
         return;
@@ -260,11 +264,12 @@ void Building::render(const glm::mat4& vp, glm::vec3 lightPos) {
     glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvp[0][0]);
     glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
 
-    // Set light properties
-    glm::vec3 lightColor(1.0f, 1.0f, 1.0f); // White light
-    glm::vec3 objectColor(1.0f, 1.0f, 1.0f); // Base color (can be adjusted)
+    // 6. Set light/uniforms
+    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+    glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
 
     glUniform3fv(lightPosID, 1, &lightPos[0]);
+    glUniform3fv(viewPosID, 1, &viewPos[0]);
     glUniform3fv(lightColorID, 1, &lightColor[0]);
     glUniform3fv(objectColorID, 1, &objectColor[0]);
 
@@ -278,7 +283,7 @@ void Building::render(const glm::mat4& vp, glm::vec3 lightPos) {
 
     // Cleanup
     glBindVertexArray(0);
-    glUseProgram(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void Building::cleanup() {

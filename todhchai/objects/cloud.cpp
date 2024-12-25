@@ -54,7 +54,7 @@ void Cloud::initialize(const glm::vec3& pos, const glm::vec3& scl)
 
     // 1. Load the OBJ file (minecraft.obj) from your assets folder
     ObjectLoader loader;
-    bool res = loader.LoadOBJ("../assets/trees.obj", vertices, uvs, normals, indices, materials, materialToIndices);
+    bool res = loader.LoadOBJ("../assets/tree.obj", vertices, uvs, normals, indices, materials, materialToIndices);
     if(!res)
     {
         std::cerr << "Failed to load ../assets/minecraft.obj" << std::endl;
@@ -91,6 +91,7 @@ void Cloud::initialize(const glm::vec3& pos, const glm::vec3& scl)
         std::cerr << "Failed to load cloud shaders." << std::endl;
         return;
     }
+
 
     // 4. Create a VAO
     glGenVertexArrays(1, &vertexArrayID);
@@ -140,6 +141,7 @@ void Cloud::initialize(const glm::vec3& pos, const glm::vec3& scl)
     mvpMatrixID      = glGetUniformLocation(programID, "MVP");
     textureSamplerID = glGetUniformLocation(programID, "textureSampler");
     lightPosID       = glGetUniformLocation(programID, "lightPos");
+    viewPosID       = glGetUniformLocation(programID, "viewPos");
     lightColorID     = glGetUniformLocation(programID, "lightColor");
     objectColorID    = glGetUniformLocation(programID, "objectColor");
 
@@ -155,7 +157,7 @@ void Cloud::initialize(const glm::vec3& pos, const glm::vec3& scl)
 // ----------------------------------------------
 // Render the Cloud
 // ----------------------------------------------
-void Cloud::render(const glm::mat4& vp, glm::vec3 lightPos)
+void Cloud::render(const glm::mat4& vp, glm::vec3 lightPos, glm::vec3 viewPos)
 {
     // Use the cloud shader
     glUseProgram(programID);
@@ -179,6 +181,14 @@ void Cloud::render(const glm::mat4& vp, glm::vec3 lightPos)
     // Compute model matrix
     glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
     model = glm::scale(model, scale);
+
+
+    GLuint modelMatrixID = glGetUniformLocation(programID, "Model");
+    if (modelMatrixID != -1) {
+        glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &model[0][0]);
+    } else {
+        std::cerr << "Warning: 'Model' uniform not found in Cloud shader.\n";
+    }
 
     // Compute final MVP
     glm::mat4 mvp = vp * model;
@@ -206,6 +216,7 @@ void Cloud::render(const glm::mat4& vp, glm::vec3 lightPos)
 
 
         glUniform3fv(lightPosID, 1, &lightPos[0]);
+        glUniform3fv(viewPosID, 1, &viewPos[0]);
         glUniform3fv(lightColorID, 1, &lightColor[0]);
         glUniform3fv(objectColorID, 1, &objectColor[0]);
 

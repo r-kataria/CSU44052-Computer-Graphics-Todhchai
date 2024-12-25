@@ -29,5 +29,3 @@ void main()
     // Calculate final vertex position
     gl_Position = MVP * vec4(vertexPosition, 1.0);
 }
-
-

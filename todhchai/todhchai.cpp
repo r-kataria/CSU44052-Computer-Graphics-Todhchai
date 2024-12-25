@@ -142,9 +142,9 @@ int main()
 
     Cloud myCloud;
     // minecraft
-     myCloud.initialize(glm::vec3(100.0f, -50.0f, 30.0f), glm::vec3(1.0f));
+     myCloud.initialize(glm::vec3(50.0f, -30.0f, 50.0f), glm::vec3(1.0f));
 
-    //myCloud.initialize(glm::vec3(75.0f, 75.0f, 75.0f), glm::vec3(50.0f));
+    //myCloud.initialize(glm::vec3(50.0f, 50.0f, 100.0f), glm::vec3(10.0f));
 
     // Setup projection matrix
     float FoV   = 45.0f;
@@ -178,11 +178,11 @@ int main()
         glm::mat4 buildingVP = projection * view;
         for(auto &b : buildings) {
             // Uncomment if you have buildings to render
-            b.render(buildingVP, lightPos);
+            b.render(buildingVP, lightPos, cameraPos);
         }
         // Render Grounds
         for(auto &g : grounds) {
-            g.render(buildingVP, lightPos); // Use the same View-Projection matrix as buildings
+            g.render(buildingVP, lightPos, cameraPos); // Use the same View-Projection matrix as buildings
         }
 
 
@@ -193,7 +193,7 @@ int main()
         glDisable(GL_CULL_FACE);
 
         // Render Clouds
-        myCloud.render(buildingVP, lightPos);
+        myCloud.render(buildingVP, lightPos, cameraPos);
 
         // Re-enable face culling
         glEnable(GL_CULL_FACE);

@@ -44,11 +44,12 @@ struct Cloud
     std::vector<GLuint> textures;
 
     void initialize(const glm::vec3& pos, const glm::vec3& scl);
-    void render(const glm::mat4 &vp, glm::vec3 lightPos);
+    void render(const glm::mat4 &vp, glm::vec3 lightPos, glm::vec3 viewPos);
     void cleanup();
 
 
     GLuint lightPosID;         // New
+    GLuint viewPosID;         // New
     GLuint lightColorID;       // New
     GLuint objectColorID;      // New
 
