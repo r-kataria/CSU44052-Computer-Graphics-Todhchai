@@ -1,5 +1,3 @@
-// cloud.vert
-
 #version 330 core
 
 layout(location = 0) in vec3 vertexPosition; // Position attribute
@@ -15,15 +13,8 @@ out vec3 fragWorldPos;
 
 void main()
 {
-    // Pass the UV coordinates to the fragment shader
     fragUV = vertexUV;
-
-    // Transform the normal to world space
     fragNormal = mat3(transpose(inverse(Model))) * vertexNormal;
-
-    // Calculate and pass the world position of the fragment
     fragWorldPos = vec3(Model * vec4(vertexPosition, 1.0));
-
-    // Final position
     gl_Position = MVP * vec4(vertexPosition, 1.0);
 }

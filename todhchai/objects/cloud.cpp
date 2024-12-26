@@ -178,9 +178,11 @@ void Cloud::render(const glm::mat4& vp, glm::vec3 lightPos, glm::vec3 viewPos)
     glBindBuffer(GL_ARRAY_BUFFER, normalBufferID);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-    // Compute model matrix
+    // In Cloud::render
     glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
     model = glm::scale(model, scale);
+
+    glm::mat4 mvp = vp * model; // Ensure 'vp' = projection * view
 
 
     GLuint modelMatrixID = glGetUniformLocation(programID, "Model");
@@ -190,8 +192,6 @@ void Cloud::render(const glm::mat4& vp, glm::vec3 lightPos, glm::vec3 viewPos)
         std::cerr << "Warning: 'Model' uniform not found in Cloud shader.\n";
     }
 
-    // Compute final MVP
-    glm::mat4 mvp = vp * model;
     glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvp[0][0]);
 
 
