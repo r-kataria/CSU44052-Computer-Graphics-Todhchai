@@ -35,6 +35,7 @@ add_executable(todhchai
     todhchai/objects/building.cpp
     todhchai/helpers/texture.cpp
     todhchai/helpers/objectLoader.cpp
+    todhchai/helpers/postprocess.cpp
     todhchai/render/shader.cpp
 )
 

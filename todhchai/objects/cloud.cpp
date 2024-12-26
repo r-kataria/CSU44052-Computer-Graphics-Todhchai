@@ -54,7 +54,7 @@ void Cloud::initialize(const glm::vec3& pos, const glm::vec3& scl)
 
     // 1. Load the OBJ file (minecraft.obj) from your assets folder
     ObjectLoader loader;
-    bool res = loader.LoadOBJ("../assets/tree.obj", vertices, uvs, normals, indices, materials, materialToIndices);
+    bool res = loader.LoadOBJ("../assets/testminecraft.obj", vertices, uvs, normals, indices, materials, materialToIndices);
     if(!res)
     {
         std::cerr << "Failed to load ../assets/minecraft.obj" << std::endl;
