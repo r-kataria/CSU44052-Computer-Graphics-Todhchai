@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "*.hs": "haskell",
-        "vector": "cpp",
-        "ostream": "cpp"
-    }
-}

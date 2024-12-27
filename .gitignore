@@ -1,6 +1,9 @@
 .DS_Store
 
 /build
+/external
 
 /assets
 /assets/tex
+
+/ref
