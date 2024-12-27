@@ -2,9 +2,9 @@
 #include "Cube.h"
 #include <vector>
 
-
 extern int SCR_WIDTH;
 extern int SCR_HEIGHT;
+extern float far_plane;
 
 // Constructor
 Cube::Cube(Shader& shader, unsigned int texture, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
@@ -16,6 +16,9 @@ Cube::Cube(Shader& shader, unsigned int texture, glm::vec3 position, glm::vec3 r
 // Destructor
 Cube::~Cube()
 {
+    // Properly delete all OpenGL resources
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }
 
 // Setters
@@ -40,8 +43,8 @@ void Cube::Render(Camera& camera, const std::vector<glm::vec3>& lightPositions,
 
     // View and Projection matrices
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 
-        (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view = camera.GetViewMatrix(); // Now allowed since camera is non-const
+            (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view = camera.GetViewMatrix();
     shader.setMat4("projection", projection);
     shader.setMat4("view", view);
 
@@ -65,8 +68,28 @@ void Cube::Render(Camera& camera, const std::vector<glm::vec3>& lightPositions,
         shader.setVec3("lights[" + std::to_string(i) + "].Color", lightColors[i]);
     }
     shader.setVec3("viewPos", camera.Position);
+    shader.setFloat("far_plane", far_plane); // Add this line
 
     // Render cube
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+}
+
+// Add this function
+void Cube::RenderDepth(Shader& depthShader)
+{
+    depthShader.use();
+
+    // Model matrix computation
+    glm::mat4 modelMat = glm::mat4(1.0f);
+    modelMat = glm::translate(modelMat, position);
+    modelMat = glm::rotate(modelMat, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+    modelMat = glm::scale(modelMat, scale);
+    depthShader.setMat4("model", modelMat);
+
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);

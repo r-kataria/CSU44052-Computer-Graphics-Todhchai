@@ -14,6 +14,9 @@ extern bool firstMouse;
 extern float lastX;
 extern float lastY;
 
+extern bool showShadow;
+
+
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -38,6 +41,10 @@ void processInput(GLFWwindow *window)
     else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
         exposure += 0.001f;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+        showShadow = !showShadow;
     }
 
 
