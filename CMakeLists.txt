@@ -74,6 +74,7 @@ include_directories(
     ${GLM_INCLUDE_DIR}
     ${GLFW3_INCLUDE_DIR}
     ${ASSIMP_INCLUDE_DIR}
+    src/includes/*.h
 )
 
 if(APPLE)
@@ -81,7 +82,16 @@ if(APPLE)
 endif()
 
 # Define the executable
-add_executable(Final src/main.cpp)
+add_executable(
+    Final
+    src/main.cpp
+    src/includes/Utils.cpp
+    src/includes/Cube.cpp
+    src/includes/Sun.cpp
+    src/includes/Input.cpp
+    src/includes/BloomFBO.cpp
+    src/includes/BloomRenderer.cpp
+    )
 
 # Link libraries to the executable
 target_link_libraries(Final ${LIBS} STB_IMAGE GLAD)

@@ -1,6 +1,5 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,18 +13,18 @@
 #include <iostream>
 #include <vector>
 
+#include "includes/BloomFBO.h"
+#include "includes/BloomRenderer.h"
+#include "includes/Utils.h"
+#include "includes/Input.h"
+#include "includes/Cube.h"
+#include "includes/Sun.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
-unsigned int loadTexture(const char *path, bool gammaCorrection);
-void renderQuad();
-void renderCube();
 
 // settings
 unsigned int SCR_WIDTH = 1280;
 unsigned int SCR_HEIGHT = 720;
-bool bloom = true;
 float exposure = 1.0f;
 float bloomFilterRadius = 0.005f;
 
@@ -33,282 +32,12 @@ float bloomFilterRadius = 0.005f;
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
-bool firstMouse = true;
 
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-// bloom stuff
-struct bloomMip
-{
-	glm::vec2 size;
-	glm::ivec2 intSize;
-	unsigned int texture;
-};
-
-class bloomFBO
-{
-public:
-	bloomFBO();
-	~bloomFBO();
-	bool Init(unsigned int windowWidth, unsigned int windowHeight, unsigned int mipChainLength);
-	void Destroy();
-	void BindForWriting();
-	const std::vector<bloomMip>& MipChain() const;
-
-private:
-	bool mInit;
-	unsigned int mFBO;
-	std::vector<bloomMip> mMipChain;
-};
-
-bloomFBO::bloomFBO() : mInit(false) {}
-bloomFBO::~bloomFBO() {}
-
-bool bloomFBO::Init(unsigned int windowWidth, unsigned int windowHeight, unsigned int mipChainLength)
-{
-    if (mInit) return true;
-
-    glGenFramebuffers(1, &mFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-
-    glm::vec2 mipSize((float)windowWidth, (float)windowHeight);
-    glm::ivec2 mipIntSize((int)windowWidth, (int)windowHeight);
-    // Safety check remains the same
-
-    for (GLuint i = 0; i < mipChainLength; i++)
-    {
-        bloomMip mip;
-        mip.size = mipSize;
-        mip.intSize = mipIntSize;
-
-        glGenTextures(1, &mip.texture);
-        glBindTexture(GL_TEXTURE_2D, mip.texture);
-        // Ensure the texture format matches your HDR requirements
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F,
-                     (int)mipSize.x, (int)mipSize.y,
-                     0, GL_RGB, GL_FLOAT, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        std::cout << "Created bloom mip " << mipIntSize.x << 'x' << mipIntSize.y << std::endl;
-
-        mipSize *= 0.5f;
-        mipIntSize /= 2;
-
-        mMipChain.emplace_back(mip);
-    }
-
-    // Attach the first mipmap level to the FBO
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                           GL_TEXTURE_2D, mMipChain[0].texture, 0);
-
-    // Set the draw buffer
-    unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
-    glDrawBuffers(1, attachments);
-
-    // Check for completeness
-    int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE)
-    {
-        printf("Bloom FBO error, status: 0x%x\n", status);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        return false;
-    }
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    mInit = true;
-    return true;
-}
-
-void bloomFBO::Destroy()
-{
-	for (int i = 0; i < (int)mMipChain.size(); i++) {
-		glDeleteTextures(1, &mMipChain[i].texture);
-		mMipChain[i].texture = 0;
-	}
-	glDeleteFramebuffers(1, &mFBO);
-	mFBO = 0;
-	mInit = false;
-}
-
-void bloomFBO::BindForWriting()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-}
-
-const std::vector<bloomMip>& bloomFBO::MipChain() const
-{
-	return mMipChain;
-}
-
-
-
-class BloomRenderer
-{
-public:
-	BloomRenderer();
-	~BloomRenderer();
-	bool Init(unsigned int windowWidth, unsigned int windowHeight);
-	void Destroy();
-	void RenderBloomTexture(unsigned int srcTexture, float filterRadius);
-	unsigned int BloomTexture();
-	unsigned int BloomMip_i(int index);
-
-private:
-	void RenderDownsamples(unsigned int srcTexture);
-	void RenderUpsamples(float filterRadius);
-
-	bool mInit;
-	bloomFBO mFBO;
-	glm::ivec2 mSrcViewportSize;
-	glm::vec2 mSrcViewportSizeFloat;
-	Shader* mDownsampleShader;
-	Shader* mUpsampleShader;
-
-	bool mKarisAverageOnDownsample = true;
-};
-
-BloomRenderer::BloomRenderer() : mInit(false) {}
-BloomRenderer::~BloomRenderer() {}
-
-bool BloomRenderer::Init(unsigned int windowWidth, unsigned int windowHeight)
-{
-    if (mInit) return true;
-    mSrcViewportSize = glm::ivec2(windowWidth, windowHeight);
-    mSrcViewportSizeFloat = glm::vec2((float)windowWidth, (float)windowHeight);
-
-    // Framebuffer initialization remains the same
-    const unsigned int num_bloom_mips = 12;
-    bool status = mFBO.Init(windowWidth, windowHeight, num_bloom_mips);
-    if (!status) {
-        std::cerr << "Failed to initialize bloom FBO - cannot create bloom renderer!\n";
-        return false;
-    }
-
-    // Shaders setup remains the same
-    mDownsampleShader = new Shader("shaders/downsample.vs", "shaders/downsample.fs");
-    mUpsampleShader = new Shader("shaders/upsample.vs", "shaders/upsample.fs");
-
-    // Configure shader uniforms
-    mDownsampleShader->use();
-    mDownsampleShader->setInt("srcTexture", 0);
-    glUseProgram(0);
-
-    mUpsampleShader->use();
-    mUpsampleShader->setInt("srcTexture", 0);
-    glUseProgram(0);
-
-    return true;
-}
-
-void BloomRenderer::Destroy()
-{
-	mFBO.Destroy();
-	delete mDownsampleShader;
-	delete mUpsampleShader;
-}
-void BloomRenderer::RenderDownsamples(unsigned int srcTexture)
-{
-    const std::vector<bloomMip>& mipChain = mFBO.MipChain();
-
-    mDownsampleShader->use();
-    mDownsampleShader->setVec2("srcResolution", mSrcViewportSizeFloat);
-    if (mKarisAverageOnDownsample) {
-        mDownsampleShader->setInt("mipLevel", 0);
-    }
-
-    // Bind srcTexture as initial texture input
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, srcTexture);
-
-    // Progressively downsample through the mip chain
-    for (int i = 0; i < (int)mipChain.size(); i++)
-    {
-        const bloomMip& mip = mipChain[i];
-        glViewport(0, 0, mip.size.x, mip.size.y);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                               GL_TEXTURE_2D, mip.texture, 0);
-
-        // Render screen-filled quad
-        renderQuad();
-
-        // Update shader uniforms for next mip
-        mDownsampleShader->setVec2("srcResolution", mip.size);
-        glBindTexture(GL_TEXTURE_2D, mip.texture);
-
-        // Disable Karis average for subsequent mips
-        if (i == 0) { mDownsampleShader->setInt("mipLevel", 1); }
-    }
-
-    glUseProgram(0);
-}
-
-void BloomRenderer::RenderUpsamples(float filterRadius)
-{
-    const std::vector<bloomMip>& mipChain = mFBO.MipChain();
-
-    mUpsampleShader->use();
-    mUpsampleShader->setFloat("filterRadius", filterRadius);
-
-    // Enable additive blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
-    glBlendEquation(GL_FUNC_ADD);
-
-    for (int i = (int)mipChain.size() - 1; i > 0; i--)
-    {
-        const bloomMip& mip = mipChain[i];
-        const bloomMip& nextMip = mipChain[i - 1];
-
-        // Bind texture to read from
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mip.texture);
-
-        // Set framebuffer to write to the next mip
-        glViewport(0, 0, nextMip.size.x, nextMip.size.y);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                               GL_TEXTURE_2D, nextMip.texture, 0);
-
-        // Render screen-filled quad
-        renderQuad();
-    }
-
-    // Disable additive blending
-    glDisable(GL_BLEND);
-
-    glUseProgram(0);
-}
-
-void BloomRenderer::RenderBloomTexture(unsigned int srcTexture, float filterRadius)
-{
-	mFBO.BindForWriting();
-
-	this->RenderDownsamples(srcTexture);
-	this->RenderUpsamples(filterRadius);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	// Restore viewport
-	glViewport(0, 0, mSrcViewportSize.x, mSrcViewportSize.y);
-}
-
-GLuint BloomRenderer::BloomTexture()
-{
-	return mFBO.MipChain()[0].texture;
-}
-
-GLuint BloomRenderer::BloomMip_i(int index)
-{
-	const std::vector<bloomMip>& mipChain = mFBO.MipChain();
-	int size = (int)mipChain.size();
-	return mipChain[(index > size-1) ? size-1 : (index < 0) ? 0 : index].texture;
-}
-
-
-
+bool firstMouse = true;
 
 
 int main()
@@ -370,88 +99,80 @@ int main()
 
     // configure (floating point) framebuffers
     // ---------------------------------------
-// configure (floating point) framebuffers with MSAA
-// -------------------------------------------------
-unsigned int hdrFBO;
-glGenFramebuffers(1, &hdrFBO);
-glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+    unsigned int hdrFBO;
+    glGenFramebuffers(1, &hdrFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
-// create 2 floating point multisampled color buffers
-unsigned int colorBuffersMSAA[2];
-glGenTextures(2, colorBuffersMSAA);
-for (unsigned int i = 0; i < 2; i++)
-{
-    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colorBuffersMSAA[i]);
-    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, GL_TRUE);
-    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // attach multisampled texture to framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D_MULTISAMPLE, colorBuffersMSAA[i], 0);
-}
+    // create 2 floating point multisampled color buffers
+    unsigned int colorBuffersMSAA[2];
+    glGenTextures(2, colorBuffersMSAA);
+    for (unsigned int i = 0; i < 2; i++)
+    {
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colorBuffersMSAA[i]);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, GL_TRUE);
+        glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        // attach multisampled texture to framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D_MULTISAMPLE, colorBuffersMSAA[i], 0);
+    }
 
-// create and attach a multisampled depth buffer (renderbuffer)
-unsigned int rboDepthMSAA;
-glGenRenderbuffers(1, &rboDepthMSAA);
-glBindRenderbuffer(GL_RENDERBUFFER, rboDepthMSAA);
-glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepthMSAA);
+    // create and attach a multisampled depth buffer (renderbuffer)
+    unsigned int rboDepthMSAA;
+    glGenRenderbuffers(1, &rboDepthMSAA);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepthMSAA);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepthMSAA);
 
-// set the draw buffers
-unsigned int attachmentsMSAA[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-glDrawBuffers(2, attachmentsMSAA);
+    // set the draw buffers
+    unsigned int attachmentsMSAA[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, attachmentsMSAA);
 
-// check framebuffer completeness
-if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    std::cout << "Multisampled HDR Framebuffer not complete!" << std::endl;
-glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // check framebuffer completeness
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Multisampled HDR Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 
 
 
-// configure a resolved framebuffer (single-sample)
-unsigned int resolvedFBO;
-glGenFramebuffers(1, &resolvedFBO);
-glBindFramebuffer(GL_FRAMEBUFFER, resolvedFBO);
+    // configure a resolved framebuffer (single-sample)
+    unsigned int resolvedFBO;
+    glGenFramebuffers(1, &resolvedFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, resolvedFBO);
 
-// create 2 normal (non-multisampled) floating point color buffers
-unsigned int resolvedColorBuffers[2];
-glGenTextures(2, resolvedColorBuffers);
-for (unsigned int i = 0; i < 2; i++)
-{
-    glBindTexture(GL_TEXTURE_2D, resolvedColorBuffers[i]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // attach texture to framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, resolvedColorBuffers[i], 0);
-}
+    // create 2 normal (non-multisampled) floating point color buffers
+    unsigned int resolvedColorBuffers[2];
+    glGenTextures(2, resolvedColorBuffers);
+    for (unsigned int i = 0; i < 2; i++)
+    {
+        glBindTexture(GL_TEXTURE_2D, resolvedColorBuffers[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        // attach texture to framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, resolvedColorBuffers[i], 0);
+    }
 
-// create and attach a single-sample depth renderbuffer
-unsigned int resolvedDepthRBO;
-glGenRenderbuffers(1, &resolvedDepthRBO);
-glBindRenderbuffer(GL_RENDERBUFFER, resolvedDepthRBO);
-glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, resolvedDepthRBO);
+    // create and attach a single-sample depth renderbuffer
+    unsigned int resolvedDepthRBO;
+    glGenRenderbuffers(1, &resolvedDepthRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, resolvedDepthRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, resolvedDepthRBO);
 
-// set the draw buffers
-unsigned int resolvedAttachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-glDrawBuffers(2, resolvedAttachments);
+    // set the draw buffers
+    unsigned int resolvedAttachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, resolvedAttachments);
 
-// check framebuffer completeness
-if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    std::cout << "Resolved Framebuffer not complete!" << std::endl;
-glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-
-
-
-
+    // check framebuffer completeness
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Resolved Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
     // ping-pong-framebuffer for blurring
@@ -509,10 +230,68 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
     BloomRenderer bloomRenderer;
     bloomRenderer.Init(SCR_WIDTH, SCR_HEIGHT);
 
-    // render loop
-    // -----------
-while (!glfwWindowShouldClose(window))
-{
+
+
+
+
+
+ // Create Cube instances
+    // ---------------------
+    std::vector<Cube> cubes;
+    
+    // Floor cube
+    cubes.emplace_back(shader, woodTexture, 
+        glm::vec3(0.0f, -1.0f, 0.0f), 
+        glm::vec3(0.0f), 
+        glm::vec3(12.5f, 0.5f, 12.5f));
+
+    // Scenery cubes
+    cubes.emplace_back(shader, containerTexture, 
+        glm::vec3(0.0f, 1.5f, 0.0f), 
+        glm::vec3(0.0f, 0.0f, 0.0f), 
+        glm::vec3(0.5f));
+
+    cubes.emplace_back(shader, containerTexture, 
+        glm::vec3(2.0f, 0.0f, 1.0f), 
+        glm::vec3(0.0f, 0.0f, 0.0f), 
+        glm::vec3(0.5f));
+
+    cubes.emplace_back(shader, containerTexture, 
+        glm::vec3(-1.0f, -1.0f, 2.0f), 
+        glm::vec3(0.0f, 60.0f, 0.0f), 
+        glm::vec3(1.0f));
+
+    cubes.emplace_back(shader, containerTexture, 
+        glm::vec3(0.0f, 2.7f, 4.0f), 
+        glm::vec3(23.0f, 0.0f, 0.0f), 
+        glm::vec3(1.25f));
+
+    cubes.emplace_back(shader, containerTexture, 
+        glm::vec3(-2.0f, 1.0f, -3.0f), 
+        glm::vec3(124.0f, 0.0f, 0.0f), 
+        glm::vec3(1.0f));
+
+    cubes.emplace_back(shader, containerTexture, 
+        glm::vec3(-3.0f, 0.0f, 0.0f), 
+        glm::vec3(0.0f, 0.0f, 0.0f), 
+        glm::vec3(0.5f));
+
+
+
+
+    // Initialize light cubes
+    std::vector<Sun> suns;
+    for (unsigned int i = 0; i < lightPositions.size(); i++)
+    {
+        suns.emplace_back(shaderLight, lightColors[i], 
+            lightPositions[i], 
+            glm::vec3(0.25f * i), 
+            glm::vec3(0.25f));
+    }
+
+
+    while (!glfwWindowShouldClose(window))
+    {
     // per-frame time logic
     // --------------------
     float currentFrame = static_cast<float>(glfwGetTime());
@@ -528,253 +307,70 @@ while (!glfwWindowShouldClose(window))
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Set up transformations
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view = camera.GetViewMatrix();
-    glm::mat4 model = glm::mat4(1.0f);
-    shader.use();
-    shader.setMat4("projection", projection);
-    shader.setMat4("view", view);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, woodTexture);
-    
-    // Set lighting uniforms
-    for (unsigned int i = 0; i < lightPositions.size(); i++)
+
+    // 1. Render scene into multisampled HDR framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Render all cubes
+    for(auto& cube : cubes)
     {
-        shader.setVec3("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
-        shader.setVec3("lights[" + std::to_string(i) + "].Color", lightColors[i]);
+        cube.Render(camera, lightPositions, lightColors);
     }
-    shader.setVec3("viewPos", camera.Position);
-        // create one large cube that acts as the floor
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0));
-        model = glm::scale(model, glm::vec3(12.5f, 0.5f, 12.5f));
-        shader.setMat4("model", model);
-        renderCube();
-        // then create multiple cubes as the scenery
-        glBindTexture(GL_TEXTURE_2D, containerTexture);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
-        model = glm::scale(model, glm::vec3(0.5f));
-        shader.setMat4("model", model);
-        renderCube();
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
-        model = glm::scale(model, glm::vec3(0.5f));
-        shader.setMat4("model", model);
-        renderCube();
+    for(auto& s : suns)
+    {
+        s.Render(camera, lightPositions, lightColors);
+    }
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-1.0f, -1.0f, 2.0));
-        model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-        shader.setMat4("model", model);
-        renderCube();
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 2.7f, 4.0));
-        model = glm::rotate(model, glm::radians(23.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-        model = glm::scale(model, glm::vec3(1.25));
-        shader.setMat4("model", model);
-        renderCube();
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-2.0f, 1.0f, -3.0));
-        model = glm::rotate(model, glm::radians(124.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-        shader.setMat4("model", model);
-        renderCube();
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0));
-        model = glm::scale(model, glm::vec3(0.5f));
-        shader.setMat4("model", model);
-        renderCube();
+        // Set up transformations
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 model = glm::mat4(1.0f);
 
-        // finally show all the light sources as bright cubes
-        shaderLight.use();
-        shaderLight.setMat4("projection", projection);
-        shaderLight.setMat4("view", view);
 
-        for (unsigned int i = 0; i < lightPositions.size(); i++)
-        {
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(lightPositions[i]));
-            model = glm::scale(model, glm::vec3(0.25f));
-            shaderLight.setMat4("model", model);
-            shaderLight.setVec3("lightColor", lightColors[i]);
-            renderCube();
-        }
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        bool horizontal = true;
-    // 2. Resolve multisampled framebuffer to resolvedFBO
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, hdrFBO);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, resolvedFBO);
-    glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT,
-                      GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // 2. Resolve multisampled framebuffer to resolvedFBO
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, hdrFBO);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, resolvedFBO);
+        glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT,
+                          GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // 3. Perform Bloom on the resolved color buffer
-    bloomRenderer.RenderBloomTexture(resolvedColorBuffers[1], bloomFilterRadius);
+        // 3. Perform Bloom on the resolved color buffer
+        bloomRenderer.RenderBloomTexture(resolvedColorBuffers[1], bloomFilterRadius);
 
-    // 4. Final render pass to screen using resolved color buffer and bloom texture
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shaderBloomFinal.use();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, resolvedColorBuffers[0]); // Resolved scene color
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, bloomRenderer.BloomTexture()); // Bloom texture
-    shaderBloomFinal.setFloat("exposure", exposure);
-    renderQuad();
+        // 4. Final render pass to screen using resolved color buffer and bloom texture
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        shaderBloomFinal.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, resolvedColorBuffers[0]); // Resolved scene color
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, bloomRenderer.BloomTexture()); // Bloom texture
+        shaderBloomFinal.setFloat("exposure", exposure);
+        bloomRenderer.renderQuad();
 
-    // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-    // -------------------------------------------------------------------------------
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-}
+        // Swap buffers and poll IO events
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+
 
     bloomRenderer.Destroy();
     glfwTerminate();
     return 0;
 }
 
-// renderCube() renders a 1x1 3D cube in NDC.
-// -------------------------------------------------
-unsigned int cubeVAO = 0;
-unsigned int cubeVBO = 0;
-void renderCube()
-{
-    // initialize (if necessary)
-    if (cubeVAO == 0)
-    {
-        float vertices[] = {
-            // back face
-            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-             1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-             1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right
-             1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-            -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-            // front face
-            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-             1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-             1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-             1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-            -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-            // left face
-            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-            -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-            -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-            // right face
-             1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-             1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-             1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right
-             1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-             1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-             1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left
-            // bottom face
-            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-             1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-             1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-             1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-            -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-            // top face
-            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-             1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-             1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right
-             1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-            -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left
-        };
-        glGenVertexArrays(1, &cubeVAO);
-        glGenBuffers(1, &cubeVBO);
-        // fill buffer
-        glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        // link vertex attributes
-        glBindVertexArray(cubeVAO);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-    // render Cube
-    glBindVertexArray(cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
-}
-
-// renderQuad() renders a 1x1 XY quad in NDC
-// -----------------------------------------
-unsigned int quadVAO = 0;
-unsigned int quadVBO;
-void renderQuad()
-{
-    if (quadVAO == 0)
-    {
-        float quadVertices[] = {
-            // positions        // texture Coords
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-        };
-        // setup plane VAO
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    }
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindVertexArray(0);
-}
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        if (exposure > 0.0f)
-            exposure -= 0.001f;
-        else
-            exposure = 0.0f;
-    }
-    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-        exposure += 0.001f;
-    }
-
-
-}
-
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 // Update the framebuffer_size_callback to modify SCR_WIDTH and SCR_HEIGHT
@@ -786,83 +382,3 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
-
-unsigned int loadTexture(char const * path, bool gammaCorrection)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
-        GLenum internalFormat;
-        GLenum dataFormat;
-
-        if (nrComponents == 1)
-        {
-            internalFormat = dataFormat = GL_RED;
-        }
-        else if (nrComponents == 3)
-        {
-            internalFormat = gammaCorrection ? GL_SRGB : GL_RGB;
-            dataFormat = GL_RGB;
-        }
-        else if (nrComponents == 4)
-        {
-            internalFormat = gammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
-            dataFormat = GL_RGBA;
-        }
-
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
-
-        // Generate mipmaps
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        // Set texture wrapping to repeat
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        // Set texture filtering
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST); // Use nearest-neighbor filtering for mipmaps
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // Nearest-neighbor filtering for magnification
-
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
-
-    return textureID;
-}
