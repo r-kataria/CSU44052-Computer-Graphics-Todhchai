@@ -66,7 +66,7 @@ void main()
     vec3 normal = normalize(fs_in.Normal);
 
     // ambient
-    vec3 ambient = 0.0 * color;
+    vec3 ambient = 0.3 * color;
 
     // lighting
     vec3 lighting = vec3(0.0);
@@ -94,5 +94,5 @@ void main()
         BrightColor = vec4(result, 1.0);
     else
         BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result, texture(diffuseTexture, fs_in.TexCoords).a);
 }

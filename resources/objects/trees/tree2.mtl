@@ -1,0 +1,62 @@
+# Blender 4.3.2 MTL File: 'None'
+# www.blender.org
+
+newmtl minecraft_block-allium.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/allium.png
+map_d ../../textures/blocks/allium_a.png
+
+newmtl minecraft_block-dandelion.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/dandelion.png
+map_d ../../textures/blocks/dandelion_a.png
+
+newmtl minecraft_block-grass_block_top.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/grass_block_top.png
+
+newmtl minecraft_block-jungle_planks.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/jungle_planks.png
+
+newmtl minecraft_block-oak_leaves.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/oak_leaves.png
+map_d ../../textures/blocks/oak_leaves_a.png
+
+newmtl minecraft_block-quartz_block_top.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/quartz_block_top.png

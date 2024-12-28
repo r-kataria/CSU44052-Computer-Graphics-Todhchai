@@ -42,7 +42,7 @@ endif()
 
 # Define libraries based on the operating system
 if(WIN32)
-    set(LIBS glfw3 opengl32 assimp freetype irrKlang)
+    set(LIBS glfw3 opengl32 assimp freetype)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 elseif(UNIX AND NOT APPLE)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
@@ -86,6 +86,7 @@ add_executable(
     Final
     src/main.cpp
     src/includes/Utils.cpp
+    src/includes/Object.cpp
     src/includes/Cube.cpp
     src/includes/Sun.cpp
     src/includes/Input.cpp
@@ -117,6 +118,16 @@ if(WIN32)
         )
     endforeach()
 endif()
+
+if(WIN32)
+    file(GLOB DLLS "dlls/*.dll")
+    foreach(DLL ${DLLS})
+        add_custom_command(TARGET Final POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${DLL} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        )
+    endforeach()
+endif()
+
 
 # Optionally, configure Visual Studio debugger working directory
 if(MSVC)

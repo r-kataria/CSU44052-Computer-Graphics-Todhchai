@@ -8,7 +8,6 @@
 #include <learnopengl/filesystem.h>
 #include <learnopengl/shader.h>
 #include <learnopengl/camera.h>
-#include <learnopengl/model.h>
 
 #include <iostream>
 #include <vector>
@@ -19,6 +18,7 @@
 #include "includes/Input.h"
 #include "includes/Cube.h"
 #include "includes/Sun.h"
+#include "includes/Object.h"
 
 // Function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -43,7 +43,7 @@ bool firstMouse = true;
 // Shadow parameters
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 float near_plane = 1.0f;
-float far_plane = 25.0f;
+float far_plane = 100.0f;
 
 const unsigned int NUM_LIGHTS = 4;
 
@@ -78,6 +78,8 @@ int main()
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+
+
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -86,6 +88,8 @@ int main()
         return -1;
     }
 
+
+
     // Enable multisampling
     glEnable(GL_MULTISAMPLE);
 
@@ -93,6 +97,7 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+
 
     // build and compile shaders
     // -------------------------
@@ -282,6 +287,14 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     bloomRenderer.Init(SCR_WIDTH, SCR_HEIGHT);
 
 
+    Object myModelObject(
+        shader, 
+        FileSystem::getPath("resources/objects/trees/tree2.obj"),
+        glm::vec3(0.0f, 10.0f, 0.0f),   // position
+        glm::vec3(0.0f, 0.0f, 0.0f),   // rotation
+        glm::vec3(1.0f, 1.0f, 1.0f)    // scale
+    );
+
 
     // Create Cube instances
     // ---------------------
@@ -341,8 +354,8 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     auto GetShadowTransforms = [&](const glm::vec3& lightPos) -> std::vector<glm::mat4> {
         std::vector<glm::mat4> shadowTransforms;
         glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 
-                                               (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, 
-                                               near_plane, far_plane);
+                                            (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, 
+                                            near_plane, far_plane);
         shadowTransforms.push_back(shadowProj * 
             glm::lookAt(lightPos, lightPos + glm::vec3( 1.0,  0.0,  0.0), glm::vec3(0.0,-1.0,  0.0)));
         shadowTransforms.push_back(shadowProj * 
@@ -392,7 +405,7 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     {
         cube.RenderDepth(simpleDepthShader);
     }
-
+    myModelObject.RenderDepth(simpleDepthShader);
  
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -400,7 +413,7 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
         // 2. Render scene as normal with shadows into HDR framebuffer
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -426,7 +439,7 @@ for (unsigned int i = 0; i < NUM_LIGHTS; ++i)
 
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
-                                (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+                                (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, far_plane);
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);
@@ -446,6 +459,8 @@ for (unsigned int i = 0; i < NUM_LIGHTS; ++i)
         {
             s.Render(camera, lightPositions, lightColors);
         }
+
+        myModelObject.Render(camera, lightPositions, lightColors);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
