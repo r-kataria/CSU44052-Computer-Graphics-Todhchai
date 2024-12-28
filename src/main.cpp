@@ -38,12 +38,16 @@ float lastY = (float)SCR_HEIGHT / 2.0;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+float timeSinceLastPrint = 0.0f;
+float printInterval = 1.0f; // 1 second
+
+
 bool firstMouse = true;
 
 // Shadow parameters
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 float near_plane = 1.0f;
-float far_plane = 100.0f;
+float far_plane = 1000.0f;
 
 const unsigned int NUM_LIGHTS = 4;
 
@@ -97,6 +101,9 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
     // build and compile shaders
@@ -249,9 +256,9 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     // positions
     std::vector<glm::vec3> lightPositions;
     lightPositions.push_back(glm::vec3( 0.0f, 0.5f,  1.5f));
-    lightPositions.push_back(glm::vec3(-4.0f, 0.5f, -3.0f));
+    lightPositions.push_back(glm::vec3(-2.465, 18.8801, -4.00198));
     lightPositions.push_back(glm::vec3( 3.0f, 0.5f,  1.0f));
-    lightPositions.push_back(glm::vec3(-.8f,  10.0f, -1.0f));
+    lightPositions.push_back(glm::vec3(0.465, 13.8801, -6.00198));
     // colors
     std::vector<glm::vec3> lightColors;
     lightColors.push_back(glm::vec3(5.0f, 5.0f, 5.0f));       // Brighter White/Yellow (Midday)
@@ -289,10 +296,10 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
 
     Object myModelObject(
         shader, 
-        FileSystem::getPath("resources/objects/trees/tree2.obj"),
+        FileSystem::getPath("resources/objects/tower.obj"),
         glm::vec3(0.0f, 10.0f, 0.0f),   // position
         glm::vec3(0.0f, 0.0f, 0.0f),   // rotation
-        glm::vec3(1.0f, 1.0f, 1.0f)    // scale
+        glm::vec3(0.10f, 0.10f, 0.10f)    // scale
     );
 
 
@@ -304,7 +311,7 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     cubes.emplace_back(shader, woodTexture, 
         glm::vec3(0.0f, -1.0f, 0.0f), 
         glm::vec3(0.0f), 
-        glm::vec3(12.5f, 0.5f, 12.5f));
+        glm::vec3(25.0f, 0.5f, 25.0f));
 
     // Scenery cubes
     cubes.emplace_back(shader, containerTexture, 
@@ -385,6 +392,18 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
         // -----
         processInput(window);
 
+            // --- Print camera position every 1 second ---
+    timeSinceLastPrint += deltaTime;
+    if (timeSinceLastPrint >= printInterval)
+    {
+        timeSinceLastPrint = 0.0f;
+        std::cout << "Camera position: ("
+                  << camera.Position.x << ", "
+                  << camera.Position.y << ", "
+                  << camera.Position.z << ")"
+                  << std::endl;
+    }
+
 for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
 {
     // 1. Render scene to depth cubemap
@@ -413,7 +432,7 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
         // 2. Render scene as normal with shadows into HDR framebuffer
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 

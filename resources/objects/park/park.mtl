@@ -1,0 +1,582 @@
+# Blender 4.3.2 MTL File: 'None'
+# www.blender.org
+
+newmtl minecraft_block-acacia_log
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/acacia_log.png
+
+newmtl minecraft_block-acacia_log_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/acacia_log_top.png
+
+newmtl minecraft_block-andesite
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/andesite.png
+
+newmtl minecraft_block-azure_bluet
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/azure_bluet.png
+map_d ../../textures/blocks/azure_bluet.png
+
+newmtl minecraft_block-birch_leaves
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/birch_leaves.png
+map_d ../../textures/blocks/birch_leaves.png
+
+newmtl minecraft_block-birch_log
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/birch_log.png
+
+newmtl minecraft_block-birch_log_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/birch_log_top.png
+
+newmtl minecraft_block-birch_planks
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/birch_planks.png
+
+newmtl minecraft_block-black_stained_glass_pane_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/black_stained_glass_pane_top.png
+map_d ../../textures/blocks/black_stained_glass_pane_top.png
+
+newmtl minecraft_block-chiseled_stone_bricks
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/chiseled_stone_bricks.png
+
+newmtl minecraft_block-clay
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/clay.png
+
+newmtl minecraft_block-cobblestone
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/cobblestone.png
+
+newmtl minecraft_block-cyan_terracotta
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/cyan_terracotta.png
+
+newmtl minecraft_block-dandelion.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/dandelion.png
+map_d ../../textures/blocks/dandelion.png
+
+newmtl minecraft_block-dark_oak_planks
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/dark_oak_planks.png
+
+newmtl minecraft_block-dirt
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/dirt.png
+
+newmtl minecraft_block-fern
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/fern.png
+map_d ../../textures/blocks/fern.png
+
+newmtl minecraft_block-gold_block
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/gold_block.png
+
+newmtl minecraft_block-granite
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/granite.png
+
+newmtl minecraft_block-grass_block_side
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/grass_block_side.png
+
+newmtl minecraft_block-grass_block_top.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/grass_block_top.png
+
+newmtl minecraft_block-gravel
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/gravel.png
+
+newmtl minecraft_block-gray_stained_glass_pane_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/gray_stained_glass_pane_top.png
+map_d ../../textures/blocks/gray_stained_glass_pane_top.png
+
+newmtl minecraft_block-iron_bars
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/iron_bars.png
+map_d ../../textures/blocks/iron_bars.png
+
+newmtl minecraft_block-jungle_leaves
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/jungle_leaves.png
+map_d ../../textures/blocks/jungle_leaves.png
+
+newmtl minecraft_block-jungle_planks.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/jungle_planks.png
+
+newmtl minecraft_block-light_blue_stained_glass_pane_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/light_blue_stained_glass_pane_top.png
+map_d ../../textures/blocks/light_blue_stained_glass_pane_top.png
+
+newmtl minecraft_block-light_gray_stained_glass_pane_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/light_gray_stained_glass_pane_top.png
+map_d ../../textures/blocks/light_gray_stained_glass_pane_top.png
+
+newmtl minecraft_block-lily_pad
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/lily_pad.png
+map_d ../../textures/blocks/lily_pad.png
+
+newmtl minecraft_block-lime_terracotta
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/lime_terracotta.png
+
+newmtl minecraft_block-nether_bricks
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/nether_bricks.png
+
+newmtl minecraft_block-oak_leaves.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/oak_leaves.png
+map_d ../../textures/blocks/oak_leaves.png
+
+newmtl minecraft_block-oak_log
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/oak_log.png
+
+newmtl minecraft_block-oxeye_daisy
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/oxeye_daisy.png
+map_d ../../textures/blocks/oxeye_daisy.png
+
+newmtl minecraft_block-podzol_side
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/podzol_side.png
+
+newmtl minecraft_block-podzol_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/podzol_top.png
+
+newmtl minecraft_block-polished_andesite
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/polished_andesite.png
+
+newmtl minecraft_block-poppy
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/poppy.png
+map_d ../../textures/blocks/poppy.png
+
+newmtl minecraft_block-prismarine
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/prismarine.png
+
+newmtl minecraft_block-quartz_block_side
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/quartz_block_side.png
+
+newmtl minecraft_block-quartz_block_top.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/quartz_block_top.png
+
+newmtl minecraft_block-quartz_pillar
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/quartz_pillar.png
+
+newmtl minecraft_block-quartz_pillar_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/quartz_pillar_top.png
+
+newmtl minecraft_block-rose_bush_bottom
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/rose_bush_bottom.png
+map_d ../../textures/blocks/rose_bush_bottom.png
+
+newmtl minecraft_block-sandstone
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/sandstone.png
+
+newmtl minecraft_block-sandstone_bottom
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/sandstone_bottom.png
+
+newmtl minecraft_block-sandstone_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/sandstone_top.png
+
+newmtl minecraft_block-sea_lantern
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/sea_lantern.png
+
+newmtl minecraft_block-smooth_stone
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/smooth_stone.png
+
+newmtl minecraft_block-smooth_stone_slab_side
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/smooth_stone_slab_side.png
+
+newmtl minecraft_block-snow
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/snow.png
+
+newmtl minecraft_block-spruce_leaves
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/spruce_leaves.png
+map_d ../../textures/blocks/spruce_leaves.png
+
+newmtl minecraft_block-stone
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/stone.png
+
+newmtl minecraft_block-stone_bricks
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd ../../textures/blocks/stone_bricks.png
+
+newmtl minecraft_block-tall_grass_bottom
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/tall_grass_bottom.png
+map_d ../../textures/blocks/tall_grass_bottom.png
+
+newmtl minecraft_block-tall_grass_top
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/tall_grass_top.png
+map_d ../../textures/blocks/tall_grass_top.png
+
+newmtl minecraft_block-water_flow
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/water_flow.png
+map_d ../../textures/blocks/water_flow.png
+
+newmtl minecraft_block-water_still
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd ../../textures/blocks/water_still.png
+map_d ../../textures/blocks/water_still.png

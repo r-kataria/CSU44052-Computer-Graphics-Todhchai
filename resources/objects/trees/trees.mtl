@@ -8,8 +8,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/allium.png
-map_d objects/trees/tex/minecraft/block/allium_a.png
+map_Kd ../../textures/blocks/allium.png
+map_d ../../textures/blocks/allium_a.png
 
 newmtl minecraft_block-azure_bluet
 Ns 0.000000
@@ -18,8 +18,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/azure_bluet.png
-map_d objects/trees/tex/minecraft/block/azure_bluet_a.png
+map_Kd ../../textures/blocks/azure_bluet.png
+map_d ../../textures/blocks/azure_bluet_a.png
 
 newmtl minecraft_block-birch_leaves
 Ns 0.000000
@@ -28,8 +28,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/birch_leaves.png
-map_d objects/trees/tex/minecraft/block/birch_leaves_a.png
+map_Kd ../../textures/blocks/birch_leaves.png
+map_d ../../textures/blocks/birch_leaves_a.png
 
 newmtl minecraft_block-birch_log
 Ns 0.000000
@@ -39,7 +39,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/birch_log.png
+map_Kd ../../textures/blocks/birch_log.png
 
 newmtl minecraft_block-birch_log_top
 Ns 0.000000
@@ -49,7 +49,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/birch_log_top.png
+map_Kd ../../textures/blocks/birch_log_top.png
 
 newmtl minecraft_block-blue_orchid
 Ns 0.000000
@@ -58,8 +58,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/blue_orchid.png
-map_d objects/trees/tex/minecraft/block/blue_orchid_a.png
+map_Kd ../../textures/blocks/blue_orchid.png
+map_d ../../textures/blocks/blue_orchid_a.png
 
 newmtl minecraft_block-dandelion.002
 Ns 0.000000
@@ -68,8 +68,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/dandelion.png
-map_d objects/trees/tex/minecraft/block/dandelion_a.png
+map_Kd ../../textures/blocks/dandelion.png
+map_d ../../textures/blocks/dandelion_a.png
 
 newmtl minecraft_block-dirt
 Ns 0.000000
@@ -79,7 +79,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/dirt.png
+map_Kd ../../textures/blocks/dirt.png
 
 newmtl minecraft_block-fern
 Ns 0.000000
@@ -88,8 +88,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/fern.png
-map_d objects/trees/tex/minecraft/block/fern_a.png
+map_Kd ../../textures/blocks/fern.png
+map_d ../../textures/blocks/fern_a.png
 
 newmtl minecraft_block-grass_block_side
 Ns 0.000000
@@ -99,7 +99,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/grass_block_side.png
+map_Kd ../../textures/blocks/grass_block_side.png
 
 newmtl minecraft_block-grass_block_top.002
 Ns 0.000000
@@ -109,7 +109,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/grass_block_top.png
+map_Kd ../../textures/blocks/grass_block_top.png
 
 newmtl minecraft_block-jungle_leaves
 Ns 0.000000
@@ -118,8 +118,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/jungle_leaves.png
-map_d objects/trees/tex/minecraft/block/jungle_leaves_a.png
+map_Kd ../../textures/blocks/jungle_leaves.png
+map_d ../../textures/blocks/jungle_leaves_a.png
 
 newmtl minecraft_block-jungle_log
 Ns 0.000000
@@ -129,7 +129,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/jungle_log.png
+map_Kd ../../textures/blocks/jungle_log.png
 
 newmtl minecraft_block-large_fern_bottom
 Ns 0.000000
@@ -138,8 +138,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/large_fern_bottom.png
-map_d objects/trees/tex/minecraft/block/large_fern_bottom_a.png
+map_Kd ../../textures/blocks/large_fern_bottom.png
+map_d ../../textures/blocks/large_fern_bottom_a.png
 
 newmtl minecraft_block-oak_leaves.002
 Ns 0.000000
@@ -148,8 +148,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/oak_leaves.png
-map_d objects/trees/tex/minecraft/block/oak_leaves_a.png
+map_Kd ../../textures/blocks/oak_leaves.png
+map_d ../../textures/blocks/oak_leaves_a.png
 
 newmtl minecraft_block-oak_log
 Ns 0.000000
@@ -159,7 +159,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/oak_log.png
+map_Kd ../../textures/blocks/oak_log.png
 
 newmtl minecraft_block-orange_tulip
 Ns 0.000000
@@ -168,8 +168,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/orange_tulip.png
-map_d objects/trees/tex/minecraft/block/orange_tulip_a.png
+map_Kd ../../textures/blocks/orange_tulip.png
+map_d ../../textures/blocks/orange_tulip_a.png
 
 newmtl minecraft_block-oxeye_daisy
 Ns 0.000000
@@ -178,8 +178,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/oxeye_daisy.png
-map_d objects/trees/tex/minecraft/block/oxeye_daisy_a.png
+map_Kd ../../textures/blocks/oxeye_daisy.png
+map_d ../../textures/blocks/oxeye_daisy_a.png
 
 newmtl minecraft_block-peony_bottom
 Ns 0.000000
@@ -188,8 +188,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/peony_bottom.png
-map_d objects/trees/tex/minecraft/block/peony_bottom_a.png
+map_Kd ../../textures/blocks/peony_bottom.png
+map_d ../../textures/blocks/peony_bottom_a.png
 
 newmtl minecraft_block-poppy
 Ns 0.000000
@@ -198,8 +198,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/poppy.png
-map_d objects/trees/tex/minecraft/block/poppy_a.png
+map_Kd ../../textures/blocks/poppy.png
+map_d ../../textures/blocks/poppy_a.png
 
 newmtl minecraft_block-red_tulip
 Ns 0.000000
@@ -208,8 +208,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/red_tulip.png
-map_d objects/trees/tex/minecraft/block/red_tulip_a.png
+map_Kd ../../textures/blocks/red_tulip.png
+map_d ../../textures/blocks/red_tulip_a.png
 
 newmtl minecraft_block-spruce_leaves
 Ns 0.000000
@@ -218,8 +218,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/spruce_leaves.png
-map_d objects/trees/tex/minecraft/block/spruce_leaves_a.png
+map_Kd ../../textures/blocks/spruce_leaves.png
+map_d ../../textures/blocks/spruce_leaves_a.png
 
 newmtl minecraft_block-spruce_log
 Ns 0.000000
@@ -229,7 +229,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/spruce_log.png
+map_Kd ../../textures/blocks/spruce_log.png
 
 newmtl minecraft_block-sunflower_back
 Ns 0.000000
@@ -238,8 +238,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/sunflower_back.png
-map_d objects/trees/tex/minecraft/block/sunflower_back_a.png
+map_Kd ../../textures/blocks/sunflower_back.png
+map_d ../../textures/blocks/sunflower_back_a.png
 
 newmtl minecraft_block-sunflower_front
 Ns 0.000000
@@ -248,8 +248,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/sunflower_front.png
-map_d objects/trees/tex/minecraft/block/sunflower_front_a.png
+map_Kd ../../textures/blocks/sunflower_front.png
+map_d ../../textures/blocks/sunflower_front_a.png
 
 newmtl minecraft_block-sunflower_top
 Ns 0.000000
@@ -258,8 +258,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/sunflower_top.png
-map_d objects/trees/tex/minecraft/block/sunflower_top_a.png
+map_Kd ../../textures/blocks/sunflower_top.png
+map_d ../../textures/blocks/sunflower_top_a.png
 
 newmtl minecraft_block-tall_grass_bottom
 Ns 0.000000
@@ -268,8 +268,8 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/tall_grass_bottom.png
-map_d objects/trees/tex/minecraft/block/tall_grass_bottom_a.png
+map_Kd ../../textures/blocks/tall_grass_bottom.png
+map_d ../../textures/blocks/tall_grass_bottom_a.png
 
 newmtl minecraft_block-white_tulip
 Ns 0.000000
@@ -278,5 +278,5 @@ Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 1
-map_Kd objects/trees/tex/minecraft/block/white_tulip.png
-map_d objects/trees/tex/minecraft/block/white_tulip_a.png
+map_Kd ../../textures/blocks/white_tulip.png
+map_d ../../textures/blocks/white_tulip_a.png

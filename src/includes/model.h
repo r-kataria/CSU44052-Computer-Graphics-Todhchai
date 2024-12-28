@@ -183,7 +183,7 @@ private:
         {
             aiString str;
             mat->GetTexture(type, i, &str);
-            cout << "Found texture [" << typeName << "] path: " << str.C_Str() << endl; // Debug: Raw texture path from MTL
+            //cout << "Found texture [" << typeName << "] path: " << str.C_Str() << endl; // Debug: Raw texture path from MTL
 
             // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
             bool skip = false;
@@ -193,7 +193,7 @@ private:
                 {
                     textures.push_back(textures_loaded[j]);
                     skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
-                    cout << "Texture already loaded: " << textures_loaded[j].path << endl; // Debug: Texture already loaded
+                    //cout << "Texture already loaded: " << textures_loaded[j].path << endl; // Debug: Texture already loaded
                     break;
                 }
             }
@@ -201,14 +201,12 @@ private:
             {   // if texture hasn't been loaded already, load it
                 // Construct the full path to the texture
                 std::string filename = directory + '/' + std::string(str.C_Str());
-                cout << "Constructed full texture path: " << filename << endl; // Debug: Full texture path
+             //   cout << "Constructed full texture path: " << filename << endl; // Debug: Full texture path
 
-                // Optionally, check if the file exists
-                /*
+
                 if (!std::filesystem::exists(filename)) {
                     std::cout << "Warning: Texture file does not exist: " << filename << endl;
                 }
-                */
 
                 // Load the texture
                 Texture texture;
@@ -217,7 +215,7 @@ private:
                 texture.path = str.C_Str();
                 textures.push_back(texture);
                 textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
-                cout << "Loaded texture ID: " << texture.id << " from path: " << filename << endl; // Debug: Texture loaded
+              //  cout << "Loaded texture ID: " << texture.id << " from path: " << filename << endl; // Debug: Texture loaded
             }
         }
         return textures;

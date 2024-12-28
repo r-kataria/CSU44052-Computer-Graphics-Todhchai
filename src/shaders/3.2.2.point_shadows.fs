@@ -101,5 +101,5 @@ void main()
     float shadow = shadows ? ShadowCalculation(fs_in.FragPos) : 0.0;                      
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
     
-    FragColor = vec4(lighting, texture(diffuseTexture, fs_in.TexCoords).a);
+    FragColor = vec4(lighting, 1.0);
 }

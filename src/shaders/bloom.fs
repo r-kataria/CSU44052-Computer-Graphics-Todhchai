@@ -42,11 +42,11 @@ float ShadowCalculation(vec3 fragPos, vec3 lightPos, int index)
     closestDepth *= far_plane; // Undo mapping [0;1]
 
     // Check whether current frag pos is in shadow
-    float bias = 0.15;
+    float bias = 0.25;
     float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 
     // PCF
-    int samples = 20;
+    int samples = 200;
     float diskRadius = (1.0 + (length(viewPos - fragPos) / far_plane)) / 25.0;
     for(int i = 0; i < samples; ++i)
     {
@@ -66,7 +66,7 @@ void main()
     vec3 normal = normalize(fs_in.Normal);
 
     // ambient
-    vec3 ambient = 0.3 * color;
+    vec3 ambient = 0 * color;
 
     // lighting
     vec3 lighting = vec3(0.0);

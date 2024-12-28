@@ -5,6 +5,8 @@
 extern int SCR_WIDTH;
 extern int SCR_HEIGHT;
 
+extern float far_plane;
+
 // Constructor
 Sun::Sun(Shader& shader, glm::vec3 color, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
     : shader(shader), color(color), position(position), rotation(rotation), scale(scale)
@@ -38,7 +40,7 @@ void Sun::Render(Camera& camera, const std::vector<glm::vec3>& lightPositions,
 
     // View and Projection matrices
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 
-        (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, far_plane);
     glm::mat4 view = camera.GetViewMatrix(); // Now allowed since camera is non-const
     shader.setMat4("projection", projection);
     shader.setMat4("view", view);
