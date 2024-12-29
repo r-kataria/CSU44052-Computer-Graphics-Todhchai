@@ -34,7 +34,7 @@ float exposure          = 1.0f;
 float bloomFilterRadius = 0.005f;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
+Camera camera(glm::vec3(-63.f, 29.f, 59.f));
 float lastX      = (float)SCR_WIDTH / 2.0f;
 float lastY      = (float)SCR_HEIGHT / 2.0f;
 bool  firstMouse = true;
@@ -50,10 +50,13 @@ int   framesCount        = 0;
 int currentSceneIndex = 1; // default scene #1
 
 // shadows
-const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+const unsigned int SHADOW_WIDTH = 512, SHADOW_HEIGHT = 512;
 float near_plane  = 1.0f;
 float far_plane   = 1000.0f;
 bool  showShadow  = true;
+
+
+float control_y = 0.0f;
 
 int main()
 {
@@ -105,7 +108,7 @@ int main()
                              "shaders/point_shadows_depth.gs");
 
     // Shadow maps
-    const unsigned int MAX_SUNS = 4;
+    const unsigned int MAX_SUNS = 16;
     unsigned int depthCubemaps[MAX_SUNS];
     unsigned int depthMapFBOs[MAX_SUNS];
     glGenTextures(MAX_SUNS, depthCubemaps);
@@ -297,6 +300,10 @@ int main()
                       << camera.Position.z << ")"
                       << " | FPS: " << fps << std::endl;
 
+     std::cout << "Control Y: ("
+                      << control_y  << std::endl;
+
+
             timeSinceLastPrint = 0.0f;
             framesCount = 0;
         }
@@ -365,6 +372,8 @@ int main()
         shader.setVec3("viewPos",    camera.Position);
         shader.setFloat("far_plane", far_plane);
         shader.setInt("shadows",     showShadow ? 1 : 0);
+        shader.setInt("lightCount",  (int)currentScene->GetLightCount());
+
 
         // The crucial part for your bloom.fs (struct Light)
         for (int i = 0; i < (int)currentScene->GetLightCount(); i++)

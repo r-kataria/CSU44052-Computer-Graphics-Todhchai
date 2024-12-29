@@ -18,6 +18,8 @@ extern bool showShadow;
 
 extern int currentSceneIndex;
 
+extern float control_y;
+
 
 void processInput(GLFWwindow *window)
 {
@@ -43,6 +45,17 @@ void processInput(GLFWwindow *window)
     else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
         exposure += 0.001f;
+    }
+
+
+
+if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        control_y +=0.1;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+        control_y -=0.1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {

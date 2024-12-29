@@ -21,6 +21,7 @@ uniform samplerCube depthMaps[NUM_LIGHTS];
 uniform vec3 viewPos;
 uniform float far_plane;
 uniform bool shadows;
+uniform int lightCount;
 
 vec3 gridSamplingDisk[20] = vec3[]
 (
@@ -46,7 +47,7 @@ float ShadowCalculation(vec3 fragPos, vec3 lightPos, int index)
     float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 
     // PCF
-    int samples = 200;
+    int samples = 20;
     float diskRadius = (1.0 + (length(viewPos - fragPos) / far_plane)) / 25.0;
     for(int i = 0; i < samples; ++i)
     {
@@ -70,7 +71,7 @@ void main()
 
     // lighting
     vec3 lighting = vec3(0.0);
-    for(int i = 0; i < NUM_LIGHTS; i++)
+    for(int i = 0; i < lightCount; i++)
     {
         // diffuse
         vec3 lightDir = normalize(lights[i].Position - fs_in.FragPos);
