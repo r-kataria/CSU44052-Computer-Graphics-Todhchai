@@ -29,6 +29,9 @@ unsigned int SCR_HEIGHT = 720;
 float exposure = 1.0f;
 float bloomFilterRadius = 0.005f;
 
+const unsigned int NUM_LIGHTS = 4;
+
+
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
@@ -44,12 +47,37 @@ float printInterval = 1.0f; // 1 second
 
 bool firstMouse = true;
 
+
+int framesCount = 0; // counts how many frames in the current one-second interval
+
+
+
+// Replace greenLightAngle with a general orbit angle
+float orbitAngle = 0.0f;
+
+// Each light’s y-coordinate
+float yValues[NUM_LIGHTS] = {
+    10.0f,   // For light 1
+    12.5f,       // For light 2
+    15.0f,    // For light 3
+    17.5f    // For light 3
+};
+
+// Each light’s angle offset in degrees (staggered by 30°)
+// 0°, 30°, 60°, 90° for four lights
+float angleOffsetsDeg[NUM_LIGHTS] = {
+    0.0f,
+    30.0f,
+    60.0f,
+    90.0f
+};
+
+
 // Shadow parameters
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 float near_plane = 1.0f;
 float far_plane = 1000.0f;
 
-const unsigned int NUM_LIGHTS = 4;
 
 bool showShadow = true;
 
@@ -67,7 +95,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL with Shadows", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Todhchai - Ireland in Future", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -255,10 +283,10 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     // -------------
     // positions
     std::vector<glm::vec3> lightPositions;
-    lightPositions.push_back(glm::vec3( 0.0f, 0.5f,  1.5f));
-    lightPositions.push_back(glm::vec3(-2.465, 18.8801, -4.00198));
-    lightPositions.push_back(glm::vec3( 3.0f, 0.5f,  1.0f));
-    lightPositions.push_back(glm::vec3(0.465, 13.8801, -6.00198));
+    lightPositions.push_back(glm::vec3( 0.0f, 7.5f,  1.5f));
+    lightPositions.push_back(glm::vec3(-2.465, 10.0f, -4.00198));
+    lightPositions.push_back(glm::vec3( 3.0f, 12.5f,  1.0f));
+    lightPositions.push_back(glm::vec3(0.465, 15.0f, -6.00198));
     // colors
     std::vector<glm::vec3> lightColors;
     lightColors.push_back(glm::vec3(5.0f, 5.0f, 5.0f));       // Brighter White/Yellow (Midday)
@@ -297,7 +325,25 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     Object myModelObject(
         shader, 
         FileSystem::getPath("resources/objects/tower.obj"),
-        glm::vec3(0.0f, 10.0f, 0.0f),   // position
+        glm::vec3(0.0f, 5.0f, 0.0f),   // position
+        glm::vec3(0.0f, 0.0f, 0.0f),   // rotation
+        glm::vec3(0.10f, 0.10f, 0.10f)    // scale
+    );
+
+
+    Object myModelObject2(
+        shader, 
+        FileSystem::getPath("resources/objects/park/park.obj"),
+        glm::vec3(20.0f, 5.0f, 20.0f),   // position
+        glm::vec3(0.0f, 0.0f, 0.0f),   // rotation
+        glm::vec3(0.10f, 0.10f, 0.10f)    // scale
+    );
+
+
+    Object myModelObject3(
+        shader, 
+        FileSystem::getPath("resources/objects/structure.obj"),
+        glm::vec3(-20.0f, 5.0f, -20.0f),   // position
         glm::vec3(0.0f, 0.0f, 0.0f),   // rotation
         glm::vec3(0.10f, 0.10f, 0.10f)    // scale
     );
@@ -384,9 +430,50 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
     {
         // per-frame time logic
         // --------------------
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+    // Time logic
+    float currentFrame = static_cast<float>(glfwGetTime());
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
+    // Update orbit angle, input, etc. (unchanged)...
+
+    // Increase counters for FPS
+    timeSinceLastPrint += deltaTime;
+    framesCount++;
+
+    // Once per second, print camera position AND FPS
+    if (timeSinceLastPrint >= printInterval)
+    {
+        // 1. Print camera position
+        std::cout << "Camera position: ("
+                  << camera.Position.x << ", "
+                  << camera.Position.y << ", "
+                  << camera.Position.z << ")";
+
+        // 2. Compute and print FPS
+        float fps = static_cast<float>(framesCount) / timeSinceLastPrint;
+        std::cout << " | FPS: " << fps << std::endl;
+
+        // Reset
+        timeSinceLastPrint = 0.0f;
+        framesCount = 0;
+    }
+
+        // 1. Update global orbitAngle by deltaTime
+        orbitAngle += deltaTime * 0.5f;  // Adjust speed factor as needed
+
+        // 2. Convert 30° increments into radians
+        //    and update all 4 lights in a circular orbit
+        float radius = 7.0f;
+       for (unsigned int i = 0; i < NUM_LIGHTS; ++i)
+        {
+            float angleRadians = glm::radians(angleOffsetsDeg[i]); 
+            float currentAngle = orbitAngle + angleRadians;
+
+            lightPositions[i].x = radius * cos(currentAngle);
+            lightPositions[i].z = radius * sin(currentAngle);
+            lightPositions[i].y = yValues[i];
+        }
 
         // input
         // -----
@@ -425,6 +512,8 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
         cube.RenderDepth(simpleDepthShader);
     }
     myModelObject.RenderDepth(simpleDepthShader);
+    myModelObject2.RenderDepth(simpleDepthShader);
+    myModelObject3.RenderDepth(simpleDepthShader);
  
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -432,7 +521,7 @@ for (unsigned int n = 0; n < NUM_LIGHTS; ++n)
         // 2. Render scene as normal with shadows into HDR framebuffer
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.02f, 0.02f, 0.02f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -473,13 +562,17 @@ for (unsigned int i = 0; i < NUM_LIGHTS; ++i)
             cube.Render(camera, lightPositions, lightColors);
         }
 
-        // Render all suns
-        for(auto& s : suns)
+        // Update the Sun positions (so the cubes move too)
+        for (unsigned int i = 0; i < suns.size(); ++i)
         {
-            s.Render(camera, lightPositions, lightColors);
+            suns[i].SetPosition(lightPositions[i]);
+            suns[i].Render(camera, lightPositions, lightColors);
         }
 
+
         myModelObject.Render(camera, lightPositions, lightColors);
+        myModelObject2.Render(camera, lightPositions, lightColors);
+        myModelObject3.Render(camera, lightPositions, lightColors);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
