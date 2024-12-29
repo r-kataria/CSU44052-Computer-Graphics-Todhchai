@@ -35,7 +35,7 @@ float exposure          = 1.0f;
 float bloomFilterRadius = 0.005f;
 
 // Camera setup
-Camera camera(glm::vec3(-63.f, 29.f, 59.f));
+Camera camera(glm::vec3(30.f, 30.f, 100.f));
 float lastX      = static_cast<float>(SCR_WIDTH) / 2.0f;
 float lastY      = static_cast<float>(SCR_HEIGHT) / 2.0f;
 bool  firstMouse = true;
@@ -369,6 +369,7 @@ int main()
         shader.setFloat("far_plane", far_plane);
         shader.setInt("shadows",     showShadow ? 1 : 0);
         shader.setInt("lightCount",  static_cast<int>(currentScene->GetLightCount()));
+        shader.setFloat("ambientS", control_y);
 
         // Configure light properties
         for (int i = 0; i < static_cast<int>(currentScene->GetLightCount()); i++)

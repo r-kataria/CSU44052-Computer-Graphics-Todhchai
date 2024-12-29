@@ -319,7 +319,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd ../textures/blocks/smooth_stone.png
+map_Kd ../textures/blocks/stone_bricks.png
 
 newmtl minecraft_block-smooth_stone_slab_side.001
 Ns 0.000000
@@ -329,7 +329,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd ../textures/blocks/smooth_stone_slab_side.png
+map_Kd ../textures/blocks/stone_bricks.png
 
 newmtl minecraft_block-spruce_leaves.001
 Ns 0.000000
@@ -369,7 +369,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd ../textures/blocks/stone.png
+map_Kd ../textures/blocks/stone_bricks.png
 
 newmtl minecraft_block-stone_bricks.001
 Ns 0.000000

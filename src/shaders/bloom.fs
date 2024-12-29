@@ -22,6 +22,7 @@ uniform vec3 viewPos;
 uniform float far_plane;
 uniform bool shadows;
 uniform int lightCount;
+uniform float ambientS;
 
 vec3 gridSamplingDisk[20] = vec3[]
 (
@@ -67,7 +68,7 @@ void main()
     vec3 normal = normalize(fs_in.Normal);
 
     // ambient
-    vec3 ambient = 0 * color;
+    vec3 ambient = ambientS * color;
 
     // lighting
     vec3 lighting = vec3(0.0);

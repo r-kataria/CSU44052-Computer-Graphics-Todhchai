@@ -34,7 +34,7 @@ void ParkScene::Init(Shader& shaderLight, Shader& shader)
 
     // Add park object
     m_objects.emplace_back(shader, FileSystem::getPath("resources/objects/park/park.obj"),
-                           glm::vec3(0.f, 1.6f, 0.f), glm::vec3(0.f), glm::vec3(0.3f));
+                           glm::vec3(0.f, 2.f, 0.f), glm::vec3(0.f), glm::vec3(0.3f));
 
     // Add floor
     unsigned int floorTex = loadTexture(FileSystem::getPath("resources/textures/gray_concrete_powder.png").c_str(), true);
@@ -92,13 +92,15 @@ void TowerScene::Init(Shader& shaderLight, Shader& shader)
         glm::vec3(0.f, 10.f,  0.f),
         glm::vec3(-2.5f, 12.5f, -4.f),
         glm::vec3(3.f, 15.f, 1.f),
-        glm::vec3(1.f, 17.5f, -6.f)
+        glm::vec3(1.f, 17.5f, -6.f),
+        glm::vec3(-1.f, 20.f, -8.f),
     };
     m_lightColors = {
         glm::vec3(5.f, 5.f, 5.f),
         glm::vec3(12.f, 4.f, 0.f),
         glm::vec3(3.f, 3.f, 18.f),
-        glm::vec3(2.f, 10.f, 2.f)
+        glm::vec3(2.f, 10.f, 2.f),
+        glm::vec3(10.f, 2.f, 2.f)
     };
 
     // Create suns
@@ -117,8 +119,8 @@ void TowerScene::Init(Shader& shaderLight, Shader& shader)
     m_cubes.emplace_back(shader, floorTex, glm::vec3(0.f, -1.f, 0.f), glm::vec3(0.f), glm::vec3(50.f, 1.0f, 50.f));
 
     // Set orbit parameters
-    m_angleOffsetsDeg = { 0.f, 30.f, 60.f, 90.f };
-    m_yValues = { 10.f, 12.5f, 15.f, 17.5f };
+    m_angleOffsetsDeg = { 0.f, 30.f, 60.f, 90.f, 120.f};
+    m_yValues = { 10.f, 20.f, 30.f, 40.f, 50.f };
 }
 
 void TowerScene::Update(float dt)
@@ -163,43 +165,40 @@ size_t TowerScene::GetLightCount() const { return m_lightPositions.size(); }
 // StructureScene Implementation
 void StructureScene::Init(Shader& shaderLight, Shader& shader)
 {
-    // Grid configuration
-    const int gridSize = 3;
-    const float spacing = 10.0f;
-    const float startOffset = -((gridSize - 1) * spacing) / 2.0f;
 
-    // Random color generation
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> colorDist(0.0f, 15.0f);
 
-    // Generate grid light positions and colors
-    for(int i = 0; i < gridSize; ++i)
-    {
-        for(int j = 0; j < gridSize; ++j)
-        {
-            float x = startOffset + i * spacing;
-            float z = startOffset + j * spacing;
-            float y = 15.0f;
-            m_lightPositions.emplace_back(glm::vec3(x, y, z));
-            m_lightColors.emplace_back(glm::vec3(colorDist(gen), colorDist(gen), colorDist(gen)));
-        }
-    }
+    m_lightPositions = {
+        glm::vec3(7.5f, 7.5f,  7.5f),
+        glm::vec3(7.5f, 7.5f, -7.5f),
+        glm::vec3(-7.5f, 7.5f, 7.5f),
+        glm::vec3(-7.5f, 7.5f, -7.5f)
+    };
+    m_lightColors = {
+        glm::vec3(colorDist(gen),colorDist(gen),colorDist(gen)),
+        glm::vec3(colorDist(gen),colorDist(gen),colorDist(gen)),
+        glm::vec3(colorDist(gen),colorDist(gen),colorDist(gen)),
+        glm::vec3(colorDist(gen),colorDist(gen),colorDist(gen))
+    };
 
     // Create suns
-    for (size_t i = 0; i < m_lightPositions.size(); ++i)
+    for (size_t i = 0; i < m_lightPositions.size(); i++)
     {
         Sun sun(shaderLight, m_lightColors[i], m_lightPositions[i], glm::vec3(0.f), glm::vec3(0.25f));
         m_suns.push_back(sun);
     }
 
+
+
     // Add structure object
     m_objects.emplace_back(shader, FileSystem::getPath("resources/objects/trinity.obj"),
-                           glm::vec3(0.f, 9.6f, 0.f), glm::vec3(0.f), glm::vec3(0.1f));
+                           glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f), glm::vec3(0.1f));
 
     // Add floor
-    unsigned int floorTex = loadTexture(FileSystem::getPath("resources/textures/grass.png").c_str(), true);
-    m_cubes.emplace_back(shader, floorTex, glm::vec3(0.f, 8.7f, 0.f), glm::vec3(0.f), glm::vec3(25.f, 0.5f, 25.f));
+    unsigned int floorTex = loadTexture(FileSystem::getPath("resources/textures/gray_concrete_powder.png").c_str(), true);
+    m_cubes.emplace_back(shader, floorTex, glm::vec3(0.f, -1.f, 0.f), glm::vec3(0.f), glm::vec3(50.f, 1.0f, 50.f));
 
     // Clear orbit parameters as they are not needed
     m_angleOffsetsDeg.clear();
@@ -284,7 +283,7 @@ void TreesScene::Init(Shader& shaderLight, Shader& shader)
     }
 
     // Add floor
-    unsigned int floorTex = loadTexture(FileSystem::getPath("resources/textures/grass.png").c_str(), true);
+    unsigned int floorTex = loadTexture(FileSystem::getPath("resources/textures/grass_block_top.png").c_str(), true);
     m_cubes.emplace_back(shader, floorTex, glm::vec3(0.f, -0.5f, 0.f), glm::vec3(0.f), glm::vec3(100.f, 1.0f, 100.f));
 }
 

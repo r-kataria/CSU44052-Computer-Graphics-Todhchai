@@ -489,7 +489,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd ../../textures/blocks/smooth_stone.png
+map_Kd ../../textures/blocks/andesite.png
 
 newmtl minecraft_block-smooth_stone_slab_side
 Ns 0.000000
@@ -499,7 +499,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd ../../textures/blocks/smooth_stone_slab_side.png
+map_Kd ../../textures/blocks/andesite.png
 
 newmtl minecraft_block-snow
 Ns 0.000000
@@ -529,7 +529,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 1
-map_Kd ../../textures/blocks/stone.png
+map_Kd ../../textures/blocks/andesite.png
 
 newmtl minecraft_block-stone_bricks
 Ns 0.000000

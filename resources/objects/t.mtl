@@ -1,0 +1,202 @@
+# Blender 4.3.2 MTL File: 'trinity.blend'
+# www.blender.org
+
+newmtl minecraft_block-andesite.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/andesite.png
+
+newmtl minecraft_block-coal_block.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/coal_block.png
+
+newmtl minecraft_block-cobblestone.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/cobblestone.png
+
+newmtl minecraft_block-dirt.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/dirt.png
+
+newmtl minecraft_block-fern.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/fern.png
+map_d mine/resources/objects/tex/minecraft/block/fern_a.png
+
+newmtl minecraft_block-gold_block.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/gold_block.png
+
+newmtl minecraft_block-grass_block_top.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/grass_block_top.png
+
+newmtl minecraft_block-iron_bars.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/iron_bars.png
+map_d mine/resources/objects/tex/minecraft/block/iron_bars_a.png
+
+newmtl minecraft_block-jungle_planks.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/jungle_planks.png
+
+newmtl minecraft_block-mushroom_stem.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/mushroom_stem.png
+
+newmtl minecraft_block-polished_andesite.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/polished_andesite.png
+
+newmtl minecraft_block-polished_diorite.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/polished_diorite.png
+
+newmtl minecraft_block-quartz_block_side.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/quartz_block_side.png
+
+newmtl minecraft_block-quartz_block_top.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/quartz_block_top.png
+
+newmtl minecraft_block-quartz_pillar.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/quartz_pillar.png
+
+newmtl minecraft_block-quartz_pillar_top.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/quartz_pillar_top.png
+
+newmtl minecraft_block-smooth_stone.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/smooth_stone.png
+
+newmtl minecraft_block-smooth_stone_slab_side.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/stone_bricks.png
+
+newmtl minecraft_block-stone.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/stone.png
+
+newmtl minecraft_block-stone_bricks.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd mine/resources/objects/tex/minecraft/block/stone_bricks.png
