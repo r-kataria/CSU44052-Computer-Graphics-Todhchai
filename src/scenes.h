@@ -1,20 +1,16 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <learnopengl/shader.h>
-#include <learnopengl/camera.h>
+#include "helpers/shader.h"
+#include "helpers/camera.h"
 #include <vector>
 #include <string>
 
-// Forward-declare classes you reference but define in .cpp
+// Fixes import errors
 class Sun;
 class Cube;
 class Object;
 
-/**
- * BaseScene
- * 
- * The abstract base that each derived scene (ParkScene, TowerScene, StructureScene) inherits from.
- */
+// base class for all scenes.
 class BaseScene
 {
 public:
@@ -22,56 +18,47 @@ public:
 
     virtual void Init(Shader& shaderLight, Shader& shader) = 0;
     virtual void Update(float dt) = 0;
-    virtual void RenderDepth(Shader &depthShader) = 0;
-    virtual void Render(Shader &mainShader, Camera &camera) = 0;
+    virtual void RenderDepth(Shader& depthShader) = 0;
+    virtual void Render(Shader& mainShader, Camera& camera) = 0;
 
-    // Expose these so main can set uniforms for lighting
     virtual const std::vector<glm::vec3>& GetLightPositions() const = 0;
-    virtual const std::vector<glm::vec3>& GetLightColors() const    = 0;
+    virtual const std::vector<glm::vec3>& GetLightColors() const = 0;
     virtual size_t GetLightCount() const = 0;
 };
 
-
-/**
- * ParkScene
- */
+// Scene representing a park environment.
 class ParkScene : public BaseScene
 {
 public:
     void Init(Shader& shaderLight, Shader& shader) override;
     void Update(float dt) override;
-    void RenderDepth(Shader &depthShader) override;
-    void Render(Shader &mainShader, Camera &camera) override;
+    void RenderDepth(Shader& depthShader) override;
+    void Render(Shader& mainShader, Camera& camera) override;
 
     const std::vector<glm::vec3>& GetLightPositions() const override;
     const std::vector<glm::vec3>& GetLightColors() const override;
     size_t GetLightCount() const override;
 
 private:
-    // orbit data
     float m_orbitAngle = 0.f;
     std::vector<float> m_angleOffsetsDeg;
     std::vector<float> m_yValues;
 
-    // scene data
     std::vector<glm::vec3> m_lightPositions;
     std::vector<glm::vec3> m_lightColors;
-    std::vector<Sun>       m_suns;
-    std::vector<Cube>      m_cubes;
-    std::vector<Object>    m_objects;
+    std::vector<Sun> m_suns;
+    std::vector<Cube> m_cubes;
+    std::vector<Object> m_objects;
 };
 
-
-/**
- * TowerScene
- */
+// Scene representing a tower environment.
 class TowerScene : public BaseScene
 {
 public:
     void Init(Shader& shaderLight, Shader& shader) override;
     void Update(float dt) override;
-    void RenderDepth(Shader &depthShader) override;
-    void Render(Shader &mainShader, Camera &camera) override;
+    void RenderDepth(Shader& depthShader) override;
+    void Render(Shader& mainShader, Camera& camera) override;
 
     const std::vector<glm::vec3>& GetLightPositions() const override;
     const std::vector<glm::vec3>& GetLightColors() const override;
@@ -84,22 +71,19 @@ private:
 
     std::vector<glm::vec3> m_lightPositions;
     std::vector<glm::vec3> m_lightColors;
-    std::vector<Sun>       m_suns;
-    std::vector<Cube>      m_cubes;
-    std::vector<Object>    m_objects;
+    std::vector<Sun> m_suns;
+    std::vector<Cube> m_cubes;
+    std::vector<Object> m_objects;
 };
 
-
-/**
- * StructureScene
- */
+// Scene representing structural elements.
 class StructureScene : public BaseScene
 {
 public:
     void Init(Shader& shaderLight, Shader& shader) override;
     void Update(float dt) override;
-    void RenderDepth(Shader &depthShader) override;
-    void Render(Shader &mainShader, Camera &camera) override;
+    void RenderDepth(Shader& depthShader) override;
+    void Render(Shader& mainShader, Camera& camera) override;
 
     const std::vector<glm::vec3>& GetLightPositions() const override;
     const std::vector<glm::vec3>& GetLightColors() const override;
@@ -112,8 +96,32 @@ private:
 
     std::vector<glm::vec3> m_lightPositions;
     std::vector<glm::vec3> m_lightColors;
-    std::vector<Sun>       m_suns;
-    std::vector<Cube>      m_cubes;
-    std::vector<Object>    m_objects;
+    std::vector<Sun> m_suns;
+    std::vector<Cube> m_cubes;
+    std::vector<Object> m_objects;
 };
 
+// Scene representing a forest with trees.
+class TreesScene : public BaseScene
+{
+public:
+    void Init(Shader& shaderLight, Shader& shader) override;
+    void Update(float dt) override;
+    void RenderDepth(Shader& depthShader) override;
+    void Render(Shader& mainShader, Camera& camera) override;
+
+    const std::vector<glm::vec3>& GetLightPositions() const override;
+    const std::vector<glm::vec3>& GetLightColors() const override;
+    size_t GetLightCount() const override;
+
+private:
+    std::vector<glm::vec3> m_lightPositions;
+    std::vector<glm::vec3> m_lightColors;
+    std::vector<Sun> m_suns;
+    std::vector<Cube> m_cubes;
+    std::vector<Object> m_objects;
+    std::vector<Object> m_trees;
+
+    int m_numTrees = 100;
+    float m_treeAreaSize = 100.0f;
+};

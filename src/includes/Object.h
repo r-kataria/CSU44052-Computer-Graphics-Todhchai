@@ -6,8 +6,9 @@
 #include <string>
 #include <vector>
 
-#include <learnopengl/shader_m.h>
-#include <learnopengl/camera.h>
+#include "../helpers/shader_m.h"
+#include "../helpers/camera.h"
+
 #include "model.h"
 
 

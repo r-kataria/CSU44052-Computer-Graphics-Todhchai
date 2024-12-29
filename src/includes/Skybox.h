@@ -10,8 +10,8 @@
 #include <memory>
 
 // Adjust the include paths based on your project structure
-#include <learnopengl/shader.h>
-#include <learnopengl/camera.h>
+#include "../helpers/shader.h"
+#include "../helpers/camera.h"
 
 
 

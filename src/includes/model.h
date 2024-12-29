@@ -12,8 +12,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <learnopengl/mesh.h>
-#include <learnopengl/shader.h>
+#include "../helpers/mesh.h"
+#include "../helpers/shader.h"
 
 #include "Utils.h"
 

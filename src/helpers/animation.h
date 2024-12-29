@@ -4,10 +4,10 @@
 #include <map>
 #include <glm/glm.hpp>
 #include <assimp/scene.h>
-#include <learnopengl/bone.h>
+#include "bone.h"
 #include <functional>
-#include <learnopengl/animdata.h>
-#include <learnopengl/model_animation.h>
+#include "animdata.h"
+#include "model_animation.h"
 
 struct AssimpNodeData
 {

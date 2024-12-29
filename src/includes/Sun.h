@@ -3,8 +3,8 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <learnopengl/shader.h>
-#include <learnopengl/camera.h> // Ensure Camera is included
+#include "../helpers/shader.h"
+#include "../helpers/camera.h"
 #include <string>
 #include <vector>
 

@@ -6,8 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <learnopengl/shader.h>
-#include <learnopengl/camera.h>
+#include "../helpers/shader.h"
+#include "../helpers/camera.h"
 
 class Cube
 {

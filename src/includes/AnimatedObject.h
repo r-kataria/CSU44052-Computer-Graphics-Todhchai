@@ -6,10 +6,10 @@
 #include <string>
 #include <vector>
 
-#include <learnopengl/shader_m.h>           // or #include <learnopengl/shader.h> if appropriate
-#include <learnopengl/camera.h>
-#include <learnopengl/model_animation.h>    // bone-capable model
-#include <learnopengl/animator.h>
+#include "../helpers/shader_m.h"
+#include "../helpers/camera.h"
+#include "../helpers/model_animation.h"
+#include "../helpers/animator.h"
 
 /**
  * AnimatedObject: parallels your "Object" class,

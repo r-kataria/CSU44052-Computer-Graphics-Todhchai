@@ -5,15 +5,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <learnopengl/filesystem.h>
-#include <learnopengl/shader.h>
-#include <learnopengl/camera.h>
+#include "./helpers/filesystem.h"
+#include "./helpers/shader.h"
+#include "./helpers/camera.h"
 
 #include <iostream>
 #include <vector>
 #include <cmath>
 
-// Includes for your custom classes
+// Custom class includes
 #include "includes/BloomFBO.h"
 #include "includes/BloomRenderer.h"
 #include "includes/Utils.h"
@@ -22,52 +22,50 @@
 #include "includes/Sun.h"
 #include "includes/Object.h"
 
-// The new Scene header:
+// Scene management
 #include "scenes.h"
 
-// Forward declarations
+// Forward declaration for callbacks
 void framebuffer_size_callback(GLFWwindow*, int, int);
-// Globals
+
+// Global variables
 unsigned int SCR_WIDTH  = 1280;
 unsigned int SCR_HEIGHT = 720;
 float exposure          = 1.0f;
 float bloomFilterRadius = 0.005f;
 
-// camera
+// Camera setup
 Camera camera(glm::vec3(-63.f, 29.f, 59.f));
-float lastX      = (float)SCR_WIDTH / 2.0f;
-float lastY      = (float)SCR_HEIGHT / 2.0f;
+float lastX      = static_cast<float>(SCR_WIDTH) / 2.0f;
+float lastY      = static_cast<float>(SCR_HEIGHT) / 2.0f;
 bool  firstMouse = true;
 
-// timing
-float deltaTime        = 0.0f;
-float lastFrame        = 0.0f;
-float timeSinceLastPrint = 0.0f;
-float printInterval      = 1.0f;
-int   framesCount        = 0;
+// Timing variables
+float deltaTime           = 0.0f;
+float lastFrame           = 0.0f;
+float timeSinceLastPrint  = 0.0f;
+float printInterval       = 1.0f;
+int   framesCount         = 0;
 
-// scene switching
-int currentSceneIndex = 1; // default scene #1
+// Scene management
+int currentSceneIndex = 1; // Default to scene #1
 
-// shadows
+// Shadow settings
 const unsigned int SHADOW_WIDTH = 512, SHADOW_HEIGHT = 512;
 float near_plane  = 1.0f;
 float far_plane   = 1000.0f;
 bool  showShadow  = true;
 
-
 float control_y = 0.0f;
 
 int main()
 {
-    // GLFW init
+    // Initialize GLFW
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Request 4x MSAA
-    glfwWindowHint(GLFW_SAMPLES, 8);
+    glfwWindowHint(GLFW_SAMPLES, 8); // 8x MSAA
 
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Todhchai - Ireland in Future", nullptr, nullptr);
     if (!window)
@@ -78,6 +76,7 @@ int main()
     }
     glfwMakeContextCurrent(window);
 
+    // Set callbacks
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window,   mouse_callback);
     glfwSetScrollCallback(window,      scroll_callback);
@@ -85,21 +84,19 @@ int main()
     // Capture mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    // GLAD init
+    // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cerr << "Failed to init GLAD" << std::endl;
+        std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
-    // GL states
+    // Configure OpenGL state
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE); // Disable face culling for cube rendering
 
-    // *** CUBE RENDER FIX *** 
-    glDisable(GL_CULL_FACE);
-
-    // Shaders
+    // Load shaders
     Shader shader("shaders/bloom.vs", "shaders/bloom.fs");
     Shader shaderLight("shaders/bloom.vs", "shaders/light_box.fs");
     Shader shaderBloomFinal("shaders/bloom_final.vs", "shaders/bloom_final.fs");
@@ -107,7 +104,7 @@ int main()
                              "shaders/point_shadows_depth.fs",
                              "shaders/point_shadows_depth.gs");
 
-    // Shadow maps
+    // Configure shadow maps
     const unsigned int MAX_SUNS = 16;
     unsigned int depthCubemaps[MAX_SUNS];
     unsigned int depthMapFBOs[MAX_SUNS];
@@ -135,7 +132,7 @@ int main()
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    // HDR MSAA FBO
+    // Configure HDR MSAA Framebuffer
     unsigned int hdrFBO;
     glGenFramebuffers(1, &hdrFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
@@ -170,7 +167,7 @@ int main()
         std::cout << "Multisampled HDR Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // Resolved FBO
+    // Configure Resolved Framebuffer
     unsigned int resolvedFBO;
     glGenFramebuffers(1, &resolvedFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, resolvedFBO);
@@ -206,7 +203,7 @@ int main()
         std::cout << "Resolved Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // Ping-pong FBO
+    // Configure Ping-pong Framebuffers for Bloom
     unsigned int pingpongFBO[2];
     unsigned int pingpongColorbuffers[2];
     glGenFramebuffers(2, pingpongFBO);
@@ -229,7 +226,7 @@ int main()
             std::cout << "Ping-pong Framebuffer not complete!" << std::endl;
     }
 
-    // Shader config
+    // Configure shaders
     shader.use();
     shader.setInt("diffuseTexture", 0);
 
@@ -243,82 +240,80 @@ int main()
     shader.use();
     shader.setInt("depthMap", 1);
 
-    // Adjust to real FB size
+    // Update framebuffer size
     glfwMakeContextCurrent(window);
     int fbWidth, fbHeight;
     glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
     SCR_WIDTH  = fbWidth;
     SCR_HEIGHT = fbHeight;
 
-    // Bloom renderer
+    // Initialize Bloom Renderer
     BloomRenderer bloomRenderer;
     bloomRenderer.Init(SCR_WIDTH, SCR_HEIGHT);
 
-    // Prepare Scenes
+    // Initialize Scenes
     ParkScene      parkScene;
+    TreesScene     treesScene;
     TowerScene     towerScene;
     StructureScene structureScene;
 
     parkScene.Init(shaderLight, shader);
+    treesScene.Init(shaderLight, shader);
     towerScene.Init(shaderLight, shader);
     structureScene.Init(shaderLight, shader);
 
-    std::vector<BaseScene*> allScenes = { &parkScene, &towerScene, &structureScene };
+    std::vector<BaseScene*> allScenes = { &towerScene, &parkScene, &structureScene, &treesScene };
 
-    // Helper to build 6 shadow transforms
-    auto GetShadowTransforms = [&](const glm::vec3& lightPos)
+    // Lambda to generate shadow transformation matrices
+    auto GetShadowTransforms = [&](const glm::vec3& lightPos) -> std::vector<glm::mat4>
     {
         std::vector<glm::mat4> mats;
         glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f),
-                                                (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT,
+                                                static_cast<float>(SHADOW_WIDTH) / SHADOW_HEIGHT,
                                                 near_plane, far_plane);
 
-        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos+glm::vec3(1,0,0),  glm::vec3(0,-1,0)));
-        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos+glm::vec3(-1,0,0), glm::vec3(0,-1,0)));
-        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos+glm::vec3(0,1,0),  glm::vec3(0,0,1)));
-        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos+glm::vec3(0,-1,0), glm::vec3(0,0,-1)));
-        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos+glm::vec3(0,0,1),  glm::vec3(0,-1,0)));
-        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos+glm::vec3(0,0,-1), glm::vec3(0,-1,0)));
+        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1, 0, 0),  glm::vec3(0, -1, 0)));
+        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
+        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, 1, 0),  glm::vec3(0, 0, 1)));
+        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1)));
+        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, 0, 1),  glm::vec3(0, -1, 0)));
+        mats.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
         return mats;
     };
 
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrame = (float)glfwGetTime();
+        // Calculate delta time
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        // FPS and camera position logging
         timeSinceLastPrint += deltaTime;
         framesCount++;
         if (timeSinceLastPrint >= printInterval)
         {
-            float fps = (float)framesCount / timeSinceLastPrint;
+            float fps = static_cast<float>(framesCount) / timeSinceLastPrint;
             std::cout << "Camera position: ("
                       << camera.Position.x << ", "
                       << camera.Position.y << ", "
                       << camera.Position.z << ")"
                       << " | FPS: " << fps << std::endl;
-
-     std::cout << "Control Y: ("
-                      << control_y  << std::endl;
-
+            std::cout << "Control Y: " << control_y << std::endl;
 
             timeSinceLastPrint = 0.0f;
             framesCount = 0;
         }
 
+        // Process input
         processInput(window);
 
-        // Switch scenes with 1,2,3 if you want (just an example)
-        // if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) currentSceneIndex = 1;
-        // if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) currentSceneIndex = 2;
-        // if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) currentSceneIndex = 3;
-
+        // Update current scene
         BaseScene* currentScene = allScenes[currentSceneIndex - 1];
         currentScene->Update(deltaTime);
 
-        // Shadow pass
+        // Shadow pass for each sun
         size_t sunCount = currentScene->GetLightCount();
         for (size_t n = 0; n < sunCount; ++n)
         {
@@ -343,10 +338,10 @@ int main()
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
-        // Normal pass
+        // Normal rendering pass
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-        glClearColor(0.02f, 0.02f, 0.02f, 1.0f);
+        glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Bind shadow maps
@@ -354,7 +349,7 @@ int main()
         for (size_t i = 0; i < sunCount; ++i)
         {
             std::string uniformName = "depthMaps[" + std::to_string(i) + "]";
-            shader.setInt(uniformName.c_str(), 1 + (int)i);
+            shader.setInt(uniformName.c_str(), 1 + static_cast<int>(i));
         }
 
         for (size_t i = 0; i < sunCount; ++i)
@@ -363,8 +358,9 @@ int main()
             glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemaps[i]);
         }
 
+        // Set projection and view matrices
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
-                                                (float)SCR_WIDTH / (float)SCR_HEIGHT,
+                                                static_cast<float>(SCR_WIDTH) / SCR_HEIGHT,
                                                 0.1f, far_plane);
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("projection", projection);
@@ -372,11 +368,10 @@ int main()
         shader.setVec3("viewPos",    camera.Position);
         shader.setFloat("far_plane", far_plane);
         shader.setInt("shadows",     showShadow ? 1 : 0);
-        shader.setInt("lightCount",  (int)currentScene->GetLightCount());
+        shader.setInt("lightCount",  static_cast<int>(currentScene->GetLightCount()));
 
-
-        // The crucial part for your bloom.fs (struct Light)
-        for (int i = 0; i < (int)currentScene->GetLightCount(); i++)
+        // Configure light properties
+        for (int i = 0; i < static_cast<int>(currentScene->GetLightCount()); i++)
         {
             const glm::vec3& pos = currentScene->GetLightPositions()[i];
             const glm::vec3& col = currentScene->GetLightColors()[i];
@@ -385,11 +380,12 @@ int main()
             shader.setVec3("lights[" + std::to_string(i) + "].Color",    col);
         }
 
+        // Render current scene
         currentScene->Render(shader, camera);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 3) Resolve MSAA
+        // Resolve MSAA framebuffer
         glBindFramebuffer(GL_READ_FRAMEBUFFER, hdrFBO);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, resolvedFBO);
         glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT,
@@ -398,10 +394,10 @@ int main()
                           GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 4) Bloom
+        // Apply bloom effect
         bloomRenderer.RenderBloomTexture(resolvedColorBuffers[1], bloomFilterRadius);
 
-        // 5) Final pass
+        // Final rendering pass
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shaderBloomFinal.use();
         glActiveTexture(GL_TEXTURE0);
@@ -411,17 +407,18 @@ int main()
         shaderBloomFinal.setFloat("exposure", exposure);
         bloomRenderer.renderQuad();
 
+        // Swap buffers and poll events
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    // Cleanup
     bloomRenderer.Destroy();
     glfwTerminate();
     return 0;
 }
 
-
-// ============== CALLBACKS =========================
+// Callback function for framebuffer resizing
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     SCR_WIDTH  = width;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BloomFBO.h"
-#include <learnopengl/shader.h>
+#include "../helpers/shader.h"
 #include <vector>
 
 

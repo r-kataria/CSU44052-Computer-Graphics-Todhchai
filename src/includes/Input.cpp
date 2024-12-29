@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <learnopengl/camera.h>
+#include "../helpers/camera.h"
 
 #include "Input.h"
 
@@ -65,6 +65,7 @@ if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) currentSceneIndex = 1;
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) currentSceneIndex = 2;
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) currentSceneIndex = 3;
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) currentSceneIndex = 4;
 
 }
 

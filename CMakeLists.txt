@@ -75,6 +75,7 @@ include_directories(
     ${GLFW3_INCLUDE_DIR}
     ${ASSIMP_INCLUDE_DIR}
     src/includes/*.h
+    src/helpers/*.h
     src/*.h
 )
 
