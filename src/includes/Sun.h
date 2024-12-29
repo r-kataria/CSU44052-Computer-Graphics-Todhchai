@@ -21,6 +21,7 @@ public:
 
     // Setters for transformations
     void SetPosition(const glm::vec3& position);
+    glm::vec3 GetPosition();
     void SetRotation(const glm::vec3& rotation);
     void SetScale(const glm::vec3& scale);
 

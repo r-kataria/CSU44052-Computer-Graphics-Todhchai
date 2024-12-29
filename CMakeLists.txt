@@ -75,6 +75,7 @@ include_directories(
     ${GLFW3_INCLUDE_DIR}
     ${ASSIMP_INCLUDE_DIR}
     src/includes/*.h
+    src/*.h
 )
 
 if(APPLE)
@@ -85,6 +86,7 @@ endif()
 add_executable(
     Final
     src/main.cpp
+    src/scenes.cpp
     src/includes/Utils.cpp
     src/includes/Object.cpp
     src/includes/Cube.cpp

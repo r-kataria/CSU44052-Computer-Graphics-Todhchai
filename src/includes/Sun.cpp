@@ -23,6 +23,10 @@ void Sun::SetPosition(const glm::vec3& pos) {
     position = pos;
 }
 
+glm::vec3 Sun::GetPosition() {
+    return position;
+}
+
 void Sun::SetRotation(const glm::vec3& rot) {
     rotation = rot;
 }

@@ -16,6 +16,8 @@ extern float lastY;
 
 extern bool showShadow;
 
+extern int currentSceneIndex;
+
 
 void processInput(GLFWwindow *window)
 {
@@ -47,6 +49,9 @@ void processInput(GLFWwindow *window)
         showShadow = !showShadow;
     }
 
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) currentSceneIndex = 1;
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) currentSceneIndex = 2;
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) currentSceneIndex = 3;
 
 }
 
