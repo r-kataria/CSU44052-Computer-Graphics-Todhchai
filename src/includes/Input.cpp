@@ -51,11 +51,11 @@ void processInput(GLFWwindow *window)
 
 if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        control_y +=0.1;
+        control_y +=0.01;
     }
     else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        control_y -=0.1;
+        control_y -=0.01;
     }
 
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
