@@ -89,6 +89,7 @@ add_executable(
     src/scenes.cpp
     src/includes/Utils.cpp
     src/includes/Object.cpp
+    src/includes/AnimatedObject.cpp
     src/includes/Cube.cpp
     src/includes/Sun.cpp
     src/includes/Input.cpp

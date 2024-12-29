@@ -1,0 +1,11 @@
+Model Information:
+* title:	Male Avatar - Voxel
+* source:	https://sketchfab.com/3d-models/male-avatar-voxel-88bf1628fc5e449aa9456280f3a73182
+* author:	Studio.5 (https://sketchfab.com/YogoshimoMoritz)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Male Avatar - Voxel" (https://sketchfab.com/3d-models/male-avatar-voxel-88bf1628fc5e449aa9456280f3a73182) by Studio.5 (https://sketchfab.com/YogoshimoMoritz) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

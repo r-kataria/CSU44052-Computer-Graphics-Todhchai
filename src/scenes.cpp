@@ -1,15 +1,21 @@
+// -------------------- scenes.cpp --------------------
 #include "scenes.h"
 #include "includes/Sun.h"
 #include "includes/Cube.h"
 #include "includes/Object.h"
-#include <learnopengl/filesystem.h> // For FileSystem::getPath
+#include <learnopengl/filesystem.h>
 #include <learnopengl/shader.h>
 #include <learnopengl/camera.h>
-#include "includes/Utils.h" // For loadTexture
+#include "includes/Utils.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+// We'll use these externs so we can access them in TowerScene::Render:
+extern unsigned int SCR_WIDTH;      // from main.cpp
+extern unsigned int SCR_HEIGHT;     // from main.cpp
+extern float far_plane;             // from main.cpp
 
 
 /* ================================
@@ -57,7 +63,7 @@ void ParkScene::Init(Shader& shaderLight, Shader& shader)
     m_cubes.emplace_back(shader, floorTex,
         glm::vec3(0.f, -1.f, 0.f),
         glm::vec3(0.f),
-        glm::vec3(25.f, 0.5f, 25.f));
+        glm::vec3(50.f, 1.0f, 50.f));
 
     // 5) Basic orbit info
     m_angleOffsetsDeg = {0.f, 30.f, 60.f, 90.f};
@@ -147,44 +153,50 @@ void TowerScene::Init(Shader& shaderLight, Shader& shader)
     );
     m_objects.push_back(tower);
 
-    // 4) Floor
+    // 5) Floor
     unsigned int floorTex = loadTexture(FileSystem::getPath("resources/textures/gray_concrete_powder.png").c_str(), true);
     m_cubes.emplace_back(shader, floorTex,
         glm::vec3(0.f, -1.f, 0.f),
         glm::vec3(0.f),
-        glm::vec3(25.f, 0.5f, 25.f));
+        glm::vec3(50.f, 1.0f, 50.f));
 
-    // 5) Orbit info
+    // 6) Orbit info
     m_angleOffsetsDeg = {0.f, 30.f, 60.f, 90.f};
     m_yValues         = {10.f, 12.5f, 15.f, 17.5f};
 }
 
 void TowerScene::Update(float dt)
 {
+    // Orbit logic
     m_orbitAngle += dt * 0.5f;
     float radius = 7.f;
-    for (size_t i=0; i<m_lightPositions.size(); i++)
+    for (size_t i = 0; i < m_lightPositions.size(); i++)
     {
         float angle = glm::radians(m_angleOffsetsDeg[i]) + m_orbitAngle;
         float x = radius * cos(angle);
         float z = radius * sin(angle);
         float y = m_yValues[i];
 
-        m_lightPositions[i] = glm::vec3(x,y,z);
+        m_lightPositions[i] = glm::vec3(x, y, z);
         m_suns[i].SetPosition(m_lightPositions[i]);
     }
 }
 
 void TowerScene::RenderDepth(Shader &depthShader)
 {
+    // Render floor & tower to depth
     for (auto &c : m_cubes)
         c.RenderDepth(depthShader);
     for (auto &o : m_objects)
         o.RenderDepth(depthShader);
+
+    // (Optional) If you want the vampire to cast shadows, you'd need a skeletal Depth VS.
+    // Here we omit it for minimal code. 
 }
 
 void TowerScene::Render(Shader &mainShader, Camera &camera)
 {
+    // Render the tower/floor/suns as before
     std::vector<glm::vec3> dummyLP, dummyLC;
     for (auto &c : m_cubes)
         c.Render(camera, dummyLP, dummyLC);
@@ -192,6 +204,9 @@ void TowerScene::Render(Shader &mainShader, Camera &camera)
         o.Render(camera, dummyLP, dummyLC);
     for (auto &sun : m_suns)
         sun.Render(camera, dummyLP, dummyLC);
+
+ 
+   
 }
 
 const std::vector<glm::vec3>& TowerScene::GetLightPositions() const { return m_lightPositions; }
@@ -284,4 +299,3 @@ void StructureScene::Render(Shader &mainShader, Camera &camera)
 const std::vector<glm::vec3>& StructureScene::GetLightPositions() const { return m_lightPositions; }
 const std::vector<glm::vec3>& StructureScene::GetLightColors()    const { return m_lightColors;    }
 size_t StructureScene::GetLightCount() const { return m_lightPositions.size(); }
-
