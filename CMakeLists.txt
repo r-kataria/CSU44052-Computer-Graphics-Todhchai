@@ -91,6 +91,7 @@ add_executable(
     src/includes/Object.cpp
     src/includes/AnimatedObject.cpp
     src/includes/Cube.cpp
+    src/includes/Skybox.cpp
     src/includes/Sun.cpp
     src/includes/Input.cpp
     src/includes/BloomFBO.cpp
