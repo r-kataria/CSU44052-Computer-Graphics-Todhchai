@@ -12,6 +12,8 @@ Todhchai (Irish for "Future") is an OpenGL rendering project envisioning a futur
 | Scene 2 | ![Scene 2](docs/scene-2.png) | A park with a single light source                         |
 | Scene 3 | ![Scene 3](docs/scene-3.png) | Trinity College Dublin with multiple vibrant lights       |
 
+See the project in motion with the full demo video [here](docs/demo.mp4).
+
 ## About the Project
 
 Todhchai is built on OpenGL and explores advanced rendering techniques. The project divides the cityscape into distinct sections to balance visual fidelity with performance constraints. A night-time setting was chosen to highlight the interplay of light and shadow, emphasizing real-time rendering techniques such as HDR and Bloom.
